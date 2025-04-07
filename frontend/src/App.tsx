@@ -13,7 +13,7 @@ import axios from 'axios';
 // Set up axios defaults
 axios.defaults.baseURL = 'https://cineniche-backend-ben-d6cqgbceadgcc4dg.eastus-01.azurewebsites.net';
 axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 10000; // 10 seconds timeout
 
 const App: React.FC = () => {
   return (
