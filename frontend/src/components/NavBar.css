@@ -1,0 +1,102 @@
+.navbar-custom {
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    padding: 15px 40px;
+  }
+  
+  .navbar-scrolled {
+    background-color: #141414;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .brand-text {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #e50914;
+    letter-spacing: 1px;
+  }
+  
+  .nav-link {
+    font-size: 1rem;
+    margin-right: 15px;
+    transition: color 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    color: #e50914 !important;
+  }
+  
+  .login-button {
+    background-color: #e50914;
+    border-color: #e50914;
+    font-weight: 500;
+    padding: 8px 16px;
+  }
+  
+  .login-button:hover {
+    background-color: #f40612;
+    border-color: #f40612;
+  }
+  
+  .user-profile {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .profile-image {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
+  .user-profile:hover .dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    min-width: 150px;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 0;
+    margin-top: 10px;
+    border: 1px solid #333;
+    z-index: 1000;
+  }
+  
+  .dropdown-item {
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e50914;
+  }
+  
+  /* For mobile devices */
+  @media (max-width: 991px) {
+    .navbar-custom {
+      padding: 10px 20px;
+      background-color: #141414;
+    }
+    
+    .dropdown-menu {
+      position: static;
+      margin-top: 10px;
+      width: 100%;
+    }
+  }

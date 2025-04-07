@@ -1,0 +1,90 @@
+import React, { useState, useEffect } from 'react';
+import { Navbar, Nav, Container, Form, FormControl, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import './NavBar.css';
+
+const NavBar: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // This will be connected to your auth system later
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <Navbar 
+      variant="dark" 
+      expand="lg" 
+      fixed="top" 
+      className={`navbar-custom ${isScrolled ? 'navbar-scrolled' : ''}`}
+    >
+      <Container fluid>
+        <Navbar.Brand as={Link} to="/">
+          <span className="brand-text">CineNiche</span>
+        </Navbar.Brand>
+        
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/this-week">This Week In Film</Nav.Link>
+            <Nav.Link as={Link} to="/retro">Retro Flashback</Nav.Link>
+            <Nav.Link as={Link} to="/gallery">Gallery</Nav.Link>
+            <Nav.Link as={Link} to="/blog">Blog</Nav.Link>
+          </Nav>
+          
+          <Form className="d-flex me-3">
+            <FormControl
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+            />
+            <Button variant="outline-light">
+              <i className="bi bi-search"></i>
+            </Button>
+          </Form>
+          
+          {isLoggedIn ? (
+            <div className="user-profile">
+              <img 
+                src="/images/profile-placeholder.jpg" 
+                alt="User Profile" 
+                className="profile-image" 
+              />
+              <div className="dropdown-menu">
+                <Link to="/profile" className="dropdown-item">Profile</Link>
+                <Link to="/settings" className="dropdown-item">Settings</Link>
+                <button className="dropdown-item" onClick={() => setIsLoggedIn(false)}>
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Button 
+              as={Link} 
+              to="/login" 
+              variant="danger" 
+              className="login-button"
+            >
+              Sign In
+            </Button>
+          )}
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+};
+
+export default NavBar;
