@@ -73,7 +73,7 @@ const NavBar: React.FC = () => {
             </div>
           ) : (
             <Button 
-              as={Link} 
+              as={Link as any} 
               to="/login" 
               variant="danger" 
               className="login-button"
