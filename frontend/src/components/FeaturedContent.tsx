@@ -6,9 +6,19 @@ interface FeaturedContentProps {
   title: string;
   description: string;
   imageUrl: string;
+  rating?: string;
+  duration?: string;
+  releaseYear?: number;
 }
 
-const FeaturedContent: React.FC<FeaturedContentProps> = ({ title, description, imageUrl }) => {
+const FeaturedContent: React.FC<FeaturedContentProps> = ({ 
+  title, 
+  description, 
+  imageUrl,
+  rating,
+  duration,
+  releaseYear
+}) => {
   return (
     <div 
       className="featured-content" 
@@ -21,12 +31,19 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({ title, description, i
           <Row>
             <Col md={6} lg={5} className="featured-text">
               <h1>{title}</h1>
+              {(rating || duration || releaseYear) && (
+                <div className="featured-meta">
+                  {releaseYear && <span className="year">{releaseYear}</span>}
+                  {rating && <span className="rating">{rating}</span>}
+                  {duration && <span className="duration">{duration}</span>}
+                </div>
+              )}
               <p className="featured-description">{description}</p>
               <div className="featured-buttons">
-                <Button variant="danger" size="lg" className="me-2">
-                  <i className="bi bi-play-fill"></i> Watch Now
+                <Button variant="light" size="lg" className="me-2 play-btn">
+                  <i className="bi bi-play-fill"></i> Play
                 </Button>
-                <Button variant="secondary" size="lg">
+                <Button variant="secondary" size="lg" className="info-btn">
                   <i className="bi bi-info-circle"></i> More Info
                 </Button>
               </div>

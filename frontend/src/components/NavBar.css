@@ -31,6 +31,9 @@
     border-color: #e50914;
     font-weight: 500;
     padding: 8px 16px;
+    height: 38px; /* Match height with search button */
+    display: flex;
+    align-items: center;
   }
   
   .login-button:hover {

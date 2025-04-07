@@ -1,44 +1,28 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Movie } from '../api/movieApi';
 import './ContentRow.css';
-
-interface ContentItem {
-  id: number;
-  title: string;
-  imageUrl: string;
-}
 
 interface ContentRowProps {
   title: string;
-  items: ContentItem[];
+  movies: Movie[];
 }
 
-const ContentRow: React.FC<ContentRowProps> = ({ title, items }) => {
+const ContentRow: React.FC<ContentRowProps> = ({ title, movies }) => {
   return (
     <div className="content-row">
       <h2 className="row-title">{title}</h2>
       <div className="items-container">
-        {items.map((item) => (
-          <div key={item.id} className="content-item">
+        {movies.slice(0, 6).map((movie) => (
+          <div key={movie.show_id} className="content-item">
             <img 
-              src={item.imageUrl || '/images/placeholder.jpg'} 
-              alt={item.title} 
+              src={`/images/movies/${movie.show_id}.jpg`} 
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/images/placeholder.jpg';
+              }}
+              alt={movie.title} 
               className="item-image"
             />
-            <div className="item-overlay">
-              <h3 className="item-title">{item.title}</h3>
-              <div className="item-actions">
-                <button className="action-button">
-                  <i className="bi bi-play-fill"></i>
-                </button>
-                <button className="action-button">
-                  <i className="bi bi-plus"></i>
-                </button>
-                <button className="action-button">
-                  <i className="bi bi-info-circle"></i>
-                </button>
-              </div>
-            </div>
           </div>
         ))}
       </div>
