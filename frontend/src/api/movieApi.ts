@@ -60,6 +60,39 @@ export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
   }
 };
 
+// Delete a movie by ID
+export const deleteMovie = async (showId: string): Promise<boolean> => {
+  try {
+    await axios.delete(`${BASE_URL}/movies/${showId}`);
+    return true;
+  } catch (error) {
+    console.error(`Error deleting movie with ID ${showId}:`, error);
+    return false;
+  }
+};
+
+// Update a movie
+export const updateMovie = async (movie: Movie): Promise<boolean> => {
+  try {
+    await axios.put(`${BASE_URL}/movies/${movie.show_id}`, movie);
+    return true;
+  } catch (error) {
+    console.error(`Error updating movie with ID ${movie.show_id}:`, error);
+    return false;
+  }
+};
+
+// Add a new movie
+export const addMovie = async (movie: Movie): Promise<Movie | null> => {
+  try {
+    const response = await axios.post(`${BASE_URL}/movies`, movie);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding new movie:', error);
+    return null;
+  }
+};
+
 // Fetch recommendations for a movie by title
 export const fetchRecommendations = async (title: string): Promise<string[]> => {
   try {
