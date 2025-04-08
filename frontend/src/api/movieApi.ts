@@ -15,7 +15,38 @@ export interface Movie {
   rating: string;
   duration: string;
   description: string;
-  action: number;
+  Action: number;
+  Adventure: number;
+  Anime_Series_International_TV_Shows: number;
+  British_TV_Shows_Docuseries_International_TV_Shows: number;
+  Children: number;
+  Comedies: number;
+  Comedies_Dramas_International_Movies: number;
+  Comedies_International_Movies: number;
+  Comedies_Romantic_Movies: number;
+  Crime_TV_Shows_Docuseries: number;
+  Documentaries: number;
+  Documentaries_International_Movies: number;
+  Docuseries: number;
+  Dramas: number;
+  Dramas_International_Movies: number;
+  Dramas_Romantic_Movies: number;
+  Family_Movies: number;
+  Fantasy: number;
+  Horror_Movies: number;
+  International_Movies_Thrillers: number;
+  International_TV_Shows_Romantic_TV_Shows_TV_Dramas: number;
+  Kids__TV: number;
+  Language_TV_Shows: number;
+  Musicals: number;
+  Nature_TV: number;
+  Reality_TV: number;
+  Spirituality: number;
+  TV_Action: number;
+  TV_Comedies: number;
+  TV_Dramas: number;
+  Talk_Shows_TV_Comedies: number;
+  Thrillers: number;
 }
 
 export interface MovieRating {
@@ -31,11 +62,17 @@ export interface MovieUser {
   email: string;
   age: number;
   gender: string;
-  netflix: number;
-  amazon_prime: number;
-  disney_: number;
-  paramount_: number;
-  max: number;
+  Netflix: number;
+  Amazon_Prime: number;
+  Disney_: number;
+  Paramount_: number;
+  Max: number;
+  Hulu: number;
+  Apple_TV_: number;
+  Peacock: number;
+  city: string;
+  state: string;
+  zip: number;
 }
 
 // Fetch all movies
