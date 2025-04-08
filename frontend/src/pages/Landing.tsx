@@ -11,7 +11,6 @@ const Landing: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission - could redirect to sign up page with email
     console.log('Email submitted:', email);
   };
 
@@ -21,7 +20,13 @@ const Landing: React.FC = () => {
         <div className="landing-overlay"></div>
         <header className="landing-header">
           <div className="landing-logo">
-            <Link to="/">CineNiche</Link>
+            <Link to="/">
+              <img
+                src="/assets/logo.png"
+                alt="CineNiche Logo"
+                className="navbar-logo"
+              />
+            </Link>
           </div>
           <div className="landing-nav">
             <div className="language-selector">
