@@ -106,7 +106,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
                 <span className="label">Genres:</span>
                 <div className="genre-tags">
                   {activeGenres.map((genre, index) => (
-                    <span key={index} className="genre-tag">{genre}</span>
+                    <span key={index} className="genre-clip">{genre}</span>
                   ))}
                 </div>
               </div>
