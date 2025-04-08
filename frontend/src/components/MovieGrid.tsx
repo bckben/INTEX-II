@@ -4,7 +4,7 @@ import { Movie } from '../api/movieApi';
 
 interface MovieGridProps {
   movies: Movie[];
-  onMovieClick?: (showId: string) => void; // 🔥 Optional click handler
+  onMovieClick?: (showId: string) => void;
 }
 
 const MovieGrid: React.FC<MovieGridProps> = ({ movies, onMovieClick }) => {
@@ -28,7 +28,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, onMovieClick }) => {
         <div
           key={movie.show_id}
           className="movie-card"
-          onClick={() => onMovieClick?.(movie.show_id)} // 🧠 Only fires if onMovieClick is passed
+          onClick={() => onMovieClick?.(movie.show_id)}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {

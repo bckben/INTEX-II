@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAllMovies, Movie } from '../api/movieApi';
+import { fetchAllMovies, fetchMovieById, Movie } from '../api/movieApi';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
 import GenreSelector from '../components/GenreSelector';
 import MovieGrid from '../components/MovieGrid';
+import MovieCard from '../components/MovieCard';
 import './MovieList.css';
 
 const MovieList: React.FC = () => {
@@ -14,6 +15,7 @@ const MovieList: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const navigate = useNavigate();
 
@@ -61,8 +63,27 @@ const MovieList: React.FC = () => {
     setSortOrder(order);
   };
 
-  const handleMovieClick = (showId: string) => {
-    navigate(`/movie/${showId}`);
+  const handleMovieClick = async (showId: string) => {
+    // Find the movie in our current list first
+    const movieFromList = movies.find(m => m.show_id === showId);
+    
+    if (movieFromList) {
+      setSelectedMovie(movieFromList);
+    } else {
+      // If we don't have it in the list for some reason, fetch it
+      try {
+        const movieData = await fetchMovieById(showId);
+        if (movieData) {
+          setSelectedMovie(movieData);
+        }
+      } catch (err) {
+        console.error(`Error fetching movie ${showId}:`, err);
+      }
+    }
+  };
+
+  const handleCloseMovieCard = () => {
+    setSelectedMovie(null);
   };
 
   return (
@@ -104,6 +125,11 @@ const MovieList: React.FC = () => {
           <MovieGrid movies={filteredMovies} onMovieClick={handleMovieClick} />
         )}
       </div>
+      
+      {selectedMovie && (
+        <MovieCard movie={selectedMovie} onClose={handleCloseMovieCard} />
+      )}
+      
       <Footer />
     </div>
   );
