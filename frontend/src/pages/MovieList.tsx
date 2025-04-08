@@ -16,6 +16,8 @@ const MovieList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [moviesPerPage, setMoviesPerPage] = useState<number>(100);
 
   const navigate = useNavigate();
 
@@ -53,7 +55,16 @@ const MovieList: React.FC = () => {
     );
 
     setFilteredMovies(result);
+    setCurrentPage(1); // Reset page when filter or sort changes
   }, [movies, selectedGenre, sortOrder]);
+
+  // Pagination
+  const indexOfLastMovie = currentPage * moviesPerPage;
+  const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+  const currentMovies = filteredMovies.slice(indexOfFirstMovie, indexOfLastMovie);
+  const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
+  const startIndex = indexOfFirstMovie + 1;
+  const endIndex = Math.min(indexOfLastMovie, filteredMovies.length);
 
   const handleGenreChange = (genre: string) => {
     setSelectedGenre(genre);
@@ -64,13 +75,10 @@ const MovieList: React.FC = () => {
   };
 
   const handleMovieClick = async (showId: string) => {
-    // Find the movie in our current list first
     const movieFromList = movies.find(m => m.show_id === showId);
-    
     if (movieFromList) {
       setSelectedMovie(movieFromList);
     } else {
-      // If we don't have it in the list for some reason, fetch it
       try {
         const movieData = await fetchMovieById(showId);
         if (movieData) {
@@ -86,14 +94,53 @@ const MovieList: React.FC = () => {
     setSelectedMovie(null);
   };
 
+  const renderPaginationControls = () => (
+    <div className="pagination-bar">
+      <button
+        className="page-nav"
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+      >
+        « Prev
+      </button>
+
+      <span className="pagination-info">
+        Page {currentPage} of {totalPages}{' '}
+        <span className="count-display">
+          (Showing {startIndex}-{endIndex} of {filteredMovies.length})
+        </span>
+      </span>
+
+      <button
+        className="page-nav"
+        disabled={currentPage === totalPages}
+        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+      >
+        Next »
+      </button>
+    </div>
+  );
+
+  const renderPageSizeSelector = () => (
+    <div className="page-size-selector">
+      <label>
+        Movies per page:&nbsp;
+        <select value={moviesPerPage} onChange={(e) => setMoviesPerPage(Number(e.target.value))}>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={filteredMovies.length}>All</option>
+        </select>
+      </label>
+    </div>
+  );
+
   return (
     <div className="movie-list-page">
       <Navbar />
       <div className="container">
         <div className="header-section">
-          <h1>
-            {selectedGenre === 'All' ? 'All Movies' : `${selectedGenre} Movies`}
-          </h1>
+          <h1>{selectedGenre === 'All' ? 'All Movies' : `${selectedGenre} Movies`}</h1>
           <div className="sorting-controls">
             <button
               className={`sort-button ${sortOrder === 'asc' ? 'active' : ''}`}
@@ -110,10 +157,7 @@ const MovieList: React.FC = () => {
           </div>
         </div>
 
-        <GenreSelector
-          selectedGenre={selectedGenre}
-          onGenreChange={handleGenreChange}
-        />
+        <GenreSelector selectedGenre={selectedGenre} onGenreChange={handleGenreChange} />
 
         {loading ? (
           <div className="loading">Loading movies...</div>
@@ -122,14 +166,19 @@ const MovieList: React.FC = () => {
         ) : filteredMovies.length === 0 ? (
           <div className="no-results">No movies found for the selected genre.</div>
         ) : (
-          <MovieGrid movies={filteredMovies} onMovieClick={handleMovieClick} />
+          <>
+            {renderPageSizeSelector()}
+            {renderPaginationControls()}
+            <MovieGrid movies={currentMovies} onMovieClick={handleMovieClick} />
+            {renderPaginationControls()}
+          </>
         )}
       </div>
-      
+
       {selectedMovie && (
         <MovieCard movie={selectedMovie} onClose={handleCloseMovieCard} />
       )}
-      
+
       <Footer />
     </div>
   );
