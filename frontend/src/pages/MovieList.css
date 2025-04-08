@@ -135,3 +135,21 @@
   font-size: 0.95rem;
   color: #aaa;
 }
+.pagination-container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.page-size-selector {
+  position: absolute;
+  right: 0;
+  margin-bottom: 0;
+}

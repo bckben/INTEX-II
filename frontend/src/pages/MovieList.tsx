@@ -96,47 +96,6 @@ const MovieList: React.FC = () => {
     setSelectedMovie(null);
   };
 
-  const renderPaginationControls = () => (
-    <div className="pagination-bar">
-      <button
-        className="page-nav"
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-      >
-        « Prev
-      </button>
-
-      <span className="pagination-info">
-        Page {currentPage} of {totalPages}{' '}
-        <span className="count-display">
-          (Showing {startIndex}-{endIndex} of {filteredMovies.length})
-        </span>
-      </span>
-
-      <button
-        className="page-nav"
-        disabled={currentPage === totalPages}
-        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-      >
-        Next »
-      </button>
-    </div>
-  );
-
-  const renderPageSizeSelector = () => (
-    <div className="page-size-selector">
-      <label>
-        Movies per page:&nbsp;
-        <select value={moviesPerPage} onChange={(e) => setMoviesPerPage(Number(e.target.value))}>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value={filteredMovies.length}>All</option>
-        </select>
-      </label>
-    </div>
-  );
-
   return (
     <div className="movie-list-page">
       <Navbar />
@@ -169,10 +128,68 @@ const MovieList: React.FC = () => {
           <div className="no-results">No movies found for the selected genre.</div>
         ) : (
           <>
-            {renderPageSizeSelector()}
-            {renderPaginationControls()}
+            <div className="pagination-container">
+              <div className="pagination-controls">
+                <button
+                  className="page-nav"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                >
+                  « Prev
+                </button>
+                
+                <span className="pagination-info">
+                  Page {currentPage} of {totalPages} (Showing {startIndex}-{endIndex} of {filteredMovies.length})
+                </span>
+                
+                <button
+                  className="page-nav"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                >
+                  Next »
+                </button>
+              </div>
+              
+              <div className="page-size-selector">
+                Movies per page:
+                <select 
+                  value={moviesPerPage} 
+                  onChange={(e) => setMoviesPerPage(Number(e.target.value))}
+                >
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={filteredMovies.length}>All</option>
+                </select>
+              </div>
+            </div>
+            
             <MovieGrid movies={currentMovies} onMovieClick={handleMovieClick} />
-            {renderPaginationControls()}
+            
+            <div className="pagination-container">
+              <div className="pagination-controls">
+                <button
+                  className="page-nav"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                >
+                  « Prev
+                </button>
+                
+                <span className="pagination-info">
+                  Page {currentPage} of {totalPages} (Showing {startIndex}-{endIndex} of {filteredMovies.length})
+                </span>
+                
+                <button
+                  className="page-nav"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                >
+                  Next »
+                </button>
+              </div>
+            </div>
           </>
         )}
       </div>
