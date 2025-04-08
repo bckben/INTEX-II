@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API base URL from your backend
-const BASE_URL = 'https://cineniche-backend-ben-d6cqgbceadgcc4dg.eastus-01.azurewebsites.net';
+const BASE_URL = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
 
 // Types from your C# models
 export interface Movie {

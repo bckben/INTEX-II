@@ -1,7 +1,7 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/CineNiche
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/appsettings.Development.json
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/appsettings.json
-/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Movies.db
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Data/Movies.db
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/CineNiche.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/CineNiche.runtimeconfig.json
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/CineNiche.pdb
@@ -31,6 +31,7 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-mips64/native/libe_sqlite3.so
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-musl-arm/native/libe_sqlite3.so
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-musl-arm64/native/libe_sqlite3.so
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-musl-s390x/native/libe_sqlite3.so
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-musl-x64/native/libe_sqlite3.so
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-ppc64le/native/libe_sqlite3.so
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/linux-s390x/native/libe_sqlite3.so
