@@ -7,6 +7,7 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import MovieList from './pages/MovieList';
+import Landing from './pages/Landing';
 
 // Import axios for global configuration
 import axios from 'axios';
@@ -20,7 +21,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/movies" element={<MovieList />} />
         {/* Add other routes as you build them */}
