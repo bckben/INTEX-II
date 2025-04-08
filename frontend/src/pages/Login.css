@@ -22,16 +22,18 @@
   letter-spacing: 1px;
 }
 
-.login-content {
+/* Form container styling - this centers the form */
+.login-form-wrapper {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 50px;
+  flex-grow: 1;
+  padding-top: 50px;
 }
 
-.login-form-container {
+.login-form-inner {
   width: 300px;
-  padding: 20px 0;
+  padding: 20px;
 }
 
 .login-title {
@@ -80,11 +82,6 @@
   font-size: 13px;
   color: #b3b3b3;
   margin-bottom: 20px;
-}
-
-.remember-me-container {
-  display: flex;
-  align-items: center;
 }
 
 .remember-me {
