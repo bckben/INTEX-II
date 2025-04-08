@@ -8,6 +8,7 @@ interface FeaturedContentProps {
   rating?: string;
   duration?: string;
   releaseYear?: number;
+  imageUrl?: string; // ✅ added
 }
 
 const FeaturedContent: React.FC<FeaturedContentProps> = ({
@@ -15,14 +16,16 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({
   description,
   rating,
   duration,
-  releaseYear
+  releaseYear,
+  imageUrl // ✅ added
 }) => {
-  // Same normalization logic as MovieGrid
+  const fallbackPoster = '/assets/movie_tape.jpg';
+
   const normalizeTitle = (input: string) =>
     input.replace(/[^a-zA-Z0-9 ]/g, '').trim();
 
   const normalized = normalizeTitle(title);
-  const posterUrl = `https://cineniche.blob.core.windows.net/posters/${normalized}.jpg`;
+  const posterUrl = imageUrl || `https://cineniche.blob.core.windows.net/posters/${normalized}.jpg`;
 
   return (
     <div className="featured-wrapper">
@@ -30,7 +33,7 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({
         className="featured-content"
         style={{ backgroundImage: `url(${posterUrl})` }}
         onError={(e: any) => {
-          e.target.style.backgroundImage = `url("/assets/movie_tape.jpg")`;
+          e.target.style.backgroundImage = `url("${fallbackPoster}")`;
         }}
       >
         <div className="featured-overlay">
