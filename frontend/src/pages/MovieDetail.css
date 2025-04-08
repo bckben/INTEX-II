@@ -1,0 +1,15 @@
+.movie-detail {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    color: white;
+  }
+  
+  .poster img {
+    max-width: 300px;
+    border-radius: 8px;
+  }
+  
+  .info {
+    flex: 1;
+  }

@@ -1,4 +1,5 @@
 using CineNiche.Models;
+using CineNiche.Data; // <-- Add this to use RecommendationService
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add DbContext with SQLite connection string from configuration
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register RecommendationService
+builder.Services.AddSingleton<RecommendationService>();
 
 // Add controllers and Swagger
 builder.Services.AddControllers();

@@ -135,3 +135,11 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/runtimes/win-x86/native/e_sqlite3.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Debug/net8.0/CineNiche.sourcelink.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/web.config
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/appsettings.Development.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/appsettings.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.deps.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.runtimeconfig.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.staticwebassets.endpoints.json
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/Data/Movies.db
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/runtimes/linux-musl-s390x/native/libe_sqlite3.so

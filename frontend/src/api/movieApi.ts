@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // API base URL from your backend
-const APP_URL = 'https://cineniche-backend-ben-d6cqgbceadgcc4dg.eastus-01.azurewebsites.net/movies';
+const BASE_URL = 'https://cineniche-backend-ben-d6cqgbceadgcc4dg.eastus-01.azurewebsites.net';
 
-// Types based on your C# models
+// Types from your C# models
 export interface Movie {
   show_id: string;
   type: string;
@@ -38,10 +38,10 @@ export interface MovieUser {
   max: number;
 }
 
-// API functions
+// Fetch all movies
 export const fetchAllMovies = async (): Promise<Movie[]> => {
   try {
-    const response = await axios.get(APP_URL);
+    const response = await axios.get(`${BASE_URL}/movies`);
     return response.data;
   } catch (error) {
     console.error('Error fetching movies:', error);
@@ -49,9 +49,10 @@ export const fetchAllMovies = async (): Promise<Movie[]> => {
   }
 };
 
+// Fetch a single movie by ID
 export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
   try {
-    const response = await axios.get(`${APP_URL}/${showId}`);
+    const response = await axios.get(`${BASE_URL}/movies/${showId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching movie with ID ${showId}:`, error);
@@ -59,14 +60,13 @@ export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
   }
 };
 
-// Additional API functions can be added as needed
-// For example:
-// export const searchMovies = async (searchTerm: string): Promise<Movie[]> => {
-//   try {
-//     const response = await axios.get(`${APP_URL}/search?term=${searchTerm}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error searching movies:', error);
-//     return [];
-//   }
-// };
+// Fetch recommendations for a movie by title
+export const fetchRecommendations = async (title: string): Promise<string[]> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/Recommendations/Show?title=${encodeURIComponent(title)}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    return [];
+  }
+};

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchAllMovies, Movie } from '../api/movieApi';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -13,6 +14,8 @@ const MovieList: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -33,24 +36,20 @@ const MovieList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Filter and sort movies whenever selectedGenre or sortOrder changes
     let result = [...movies];
-    
-    // Filter by genre
+
     if (selectedGenre !== 'All') {
-      result = result.filter(movie => {
-        // This is a simple example - you might need to adjust based on your actual data structure
-        // Assuming your movie has a "type" field that can be used for genre
-        return movie.type.toLowerCase() === selectedGenre.toLowerCase();
-      });
+      result = result.filter((movie) =>
+        movie.type.toLowerCase() === selectedGenre.toLowerCase()
+      );
     }
-    
-    // Sort by title
-    result.sort((a, b) => {
-      const comparison = a.title.localeCompare(b.title);
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
-    
+
+    result.sort((a, b) =>
+      sortOrder === 'asc'
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title)
+    );
+
     setFilteredMovies(result);
   }, [movies, selectedGenre, sortOrder]);
 
@@ -62,20 +61,26 @@ const MovieList: React.FC = () => {
     setSortOrder(order);
   };
 
+  const handleMovieClick = (showId: string) => {
+    navigate(`/movie/${showId}`);
+  };
+
   return (
     <div className="movie-list-page">
       <Navbar />
       <div className="container">
         <div className="header-section">
-          <h1>{selectedGenre === 'All' ? 'All Movies' : `${selectedGenre} Movies`}</h1>
+          <h1>
+            {selectedGenre === 'All' ? 'All Movies' : `${selectedGenre} Movies`}
+          </h1>
           <div className="sorting-controls">
-            <button 
+            <button
               className={`sort-button ${sortOrder === 'asc' ? 'active' : ''}`}
               onClick={() => handleSortChange('asc')}
             >
               A-Z
             </button>
-            <button 
+            <button
               className={`sort-button ${sortOrder === 'desc' ? 'active' : ''}`}
               onClick={() => handleSortChange('desc')}
             >
@@ -83,12 +88,12 @@ const MovieList: React.FC = () => {
             </button>
           </div>
         </div>
-        
-        <GenreSelector 
-          selectedGenre={selectedGenre} 
-          onGenreChange={handleGenreChange} 
+
+        <GenreSelector
+          selectedGenre={selectedGenre}
+          onGenreChange={handleGenreChange}
         />
-        
+
         {loading ? (
           <div className="loading">Loading movies...</div>
         ) : error ? (
@@ -96,7 +101,7 @@ const MovieList: React.FC = () => {
         ) : filteredMovies.length === 0 ? (
           <div className="no-results">No movies found for the selected genre.</div>
         ) : (
-          <MovieGrid movies={filteredMovies} />
+          <MovieGrid movies={filteredMovies} onMovieClick={handleMovieClick} />
         )}
       </div>
       <Footer />

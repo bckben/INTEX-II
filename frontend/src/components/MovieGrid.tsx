@@ -1,40 +1,39 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Movie } from '../api/movieApi';
 import './MovieGrid.css';
+import { Movie } from '../api/movieApi';
 
 interface MovieGridProps {
   movies: Movie[];
+  onMovieClick?: (showId: string) => void; // 🔥 Optional click handler
 }
 
-const MovieGrid: React.FC<MovieGridProps> = ({ movies }) => {
-  const fallbackPoster = '/assets/movie_tape.jpg'; // Default image fallback
+const MovieGrid: React.FC<MovieGridProps> = ({ movies, onMovieClick }) => {
+  const fallbackPoster = '/assets/movie_tape.jpg';
 
-  // Normalize movie title to match blob filename (remove symbols, keep spaces)
   const getPosterUrl = (title: string) => {
-    const normalizedTitle = title
-      .replace(/[^a-zA-Z0-9 ]/g, '') // Remove non-alphanumeric characters except spaces
-      .trim();
-
+    const normalizedTitle = title.replace(/[^a-zA-Z0-9 ]/g, '').trim();
     return `https://cineniche.blob.core.windows.net/posters/${normalizedTitle}.jpg`;
   };
 
-  // 🔁 Preload all poster images
   useEffect(() => {
     movies.forEach((movie) => {
-      const posterUrl = getPosterUrl(movie.title);
       const img = new Image();
-      img.src = posterUrl;
+      img.src = getPosterUrl(movie.title);
     });
   }, [movies]);
 
   return (
     <div className="movie-grid">
       {movies.map((movie) => (
-        <Link
-          to={`/movie/${movie.show_id}`}
+        <div
           key={movie.show_id}
           className="movie-card"
+          onClick={() => onMovieClick?.(movie.show_id)} // 🧠 Only fires if onMovieClick is passed
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') onMovieClick?.(movie.show_id);
+          }}
         >
           <div className="movie-poster">
             <img
@@ -61,7 +60,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies }) => {
             </div>
           </div>
           <div className="movie-title">{movie.title}</div>
-        </Link>
+        </div>
       ))}
     </div>
   );
