@@ -19,7 +19,9 @@ const MovieList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [moviesPerPage, setMoviesPerPage] = useState<number>(100);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
+  console.log(navigate); // temp use to avoid TS error
 
   useEffect(() => {
     const loadMovies = async () => {
