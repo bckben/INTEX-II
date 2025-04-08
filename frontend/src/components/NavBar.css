@@ -26,7 +26,7 @@
     color: #e50914 !important;
   }
   
-  .signin-button {
+  .logout-button {
     background-color: #e50914;
     border-color: #e50914;
     font-weight: 500;
@@ -36,7 +36,7 @@
     align-items: center;
   }
   
-  .signin-button:hover {
+  .logout-button:hover {
     background-color: #f40612;
     border-color: #f40612;
   }
