@@ -74,7 +74,7 @@ const NavBar: React.FC = () => {
               as={Link as any}
               to="/login"
               variant="danger"
-              className="login-button"
+              className="signin-button"
             >
               Sign In
             </Button>
