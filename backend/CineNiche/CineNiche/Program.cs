@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "https://yourfrontend.azurewebsites.net")
+        policy.WithOrigins("http://localhost:5173", "https://kind-sky-0c5281b1e.6.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
