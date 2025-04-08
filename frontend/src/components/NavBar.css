@@ -103,3 +103,10 @@
       width: 100%;
     }
   }
+
+  .navbar-logo {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 10px;
+  }
