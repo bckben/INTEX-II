@@ -6,6 +6,15 @@ import './App.css';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import MovieList from './pages/MovieList';
+
+// Import axios for global configuration
+import axios from 'axios';
+
+// Set up axios defaults
+axios.defaults.baseURL = 'https://cineniche-backend-ben-d6cqgbceadgcc4dg.eastus-01.azurewebsites.net';
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.timeout = 10000;
 
 const App: React.FC = () => {
   return (
@@ -13,13 +22,14 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/movies" element={<MovieList />} />
         {/* Add other routes as you build them */}
+        {/* <Route path="/signup" element={<SignUp />} /> */}
+        {/* <Route path="/movie/:id" element={<MovieDetail />} /> */}
         {/* <Route path="/this-week" element={<ThisWeek />} /> */}
         {/* <Route path="/retro" element={<RetroFlashback />} /> */}
         {/* <Route path="/gallery" element={<Gallery />} /> */}
         {/* <Route path="/blog" element={<Blog />} /> */}
-        {/* <Route path="/signup" element={<Signup />} /> */}
-        {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
       </Routes>
     </Router>
   );
