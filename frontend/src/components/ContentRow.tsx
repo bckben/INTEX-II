@@ -1,3 +1,4 @@
+// ContentRow.tsx
 import React from 'react';
 import { Movie } from '../api/movieApi';
 import './ContentRow.css';
@@ -8,20 +9,28 @@ interface ContentRowProps {
 }
 
 const ContentRow: React.FC<ContentRowProps> = ({ title, movies }) => {
+  const getPosterUrl = (title: string): string => {
+    const normalized = title
+      .replace(/[^a-zA-Z0-9 ]/g, '') // remove non-alphanumeric except spaces
+      .trim();
+
+    return `https://cineniche.blob.core.windows.net/posters/${normalized}.jpg`;
+  };
+
   return (
     <div className="content-row">
       <h2 className="row-title">{title}</h2>
       <div className="items-container">
         {movies.slice(0, 6).map((movie) => (
           <div key={movie.show_id} className="content-item">
-            <img 
-              src={`/images/movies/${movie.show_id}.jpg`} 
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = '/images/placeholder.jpg';
-              }}
-              alt={movie.title} 
+            <img
+              src={getPosterUrl(movie.title)}
+              alt={movie.title}
               className="item-image"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.src = '/assets/movie_tape.jpg';
+              }}
             />
           </div>
         ))}
