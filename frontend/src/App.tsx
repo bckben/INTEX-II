@@ -6,6 +6,7 @@ import './App.css';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import MovieList from './pages/MovieList';
 
 // Import axios for global configuration
 import axios from 'axios';
@@ -21,6 +22,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/movies" element={<MovieList />} />
         {/* Add other routes as you build them */}
         {/* <Route path="/signup" element={<SignUp />} /> */}
         {/* <Route path="/movie/:id" element={<MovieDetail />} /> */}
