@@ -24,7 +24,7 @@ const NavBar: React.FC = () => {
       className={`navbar-custom ${isScrolled ? 'navbar-scrolled' : ''}`}
     >
       <Container fluid>
-      <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+      <Navbar.Brand as={Link} to="/home" className="d-flex align-items-center">
         <img
           src="/assets/logo.png"
           alt="CineNiche Logo"
@@ -35,8 +35,8 @@ const NavBar: React.FC = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/this-week">This Week In Film</Nav.Link>
+            <Nav.Link as={Link} to="/home">Home</Nav.Link>
+            <Nav.Link as={Link} to="/movies">All Movies</Nav.Link>
             <Nav.Link as={Link} to="/retro">Retro Flashback</Nav.Link>
             <Nav.Link as={Link} to="/gallery">Gallery</Nav.Link>
             <Nav.Link as={Link} to="/blog">Blog</Nav.Link>
