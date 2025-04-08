@@ -1,117 +1,117 @@
 .movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-  
-  .movie-card {
-    position: relative;
-    transition: transform 0.3s ease;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .movie-card:hover {
-    transform: scale(1.05);
-    z-index: 2;
-  }
-  
-  .movie-poster {
-    position: relative;
-    aspect-ratio: 2/3;
-    border-radius: 4px;
-    overflow: hidden;
-    background-color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .placeholder-poster {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.2);
-    background: linear-gradient(135deg, #333 0%, #222 100%);
-  }
-  
-  .hover-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-  
-  .movie-card:hover .hover-info {
-    opacity: 1;
-  }
-  
-  .movie-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .hover-info h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .movie-meta {
-    display: flex;
-    gap: 10px;
-    font-size: 0.8rem;
-    color: #ccc;
-    margin-bottom: 10px;
-  }
-  
-  .rating {
-    color: #46d369;
-  }
-  
-  .movie-description {
-    font-size: 0.8rem;
-    color: #999;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  @media (max-width: 768px) {
-    .movie-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    
-    .movie-title {
-      font-size: 0.8rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .movie-grid {
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.movie-card {
+  position: relative;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.movie-poster {
+  position: relative;
+  aspect-ratio: 2/3;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #333;
+  margin-bottom: 10px;
+}
+
+.placeholder-poster {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #333 0%, #222 100%);
+}
+
+.hover-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.movie-card:hover .hover-info {
+  opacity: 1;
+}
+
+.movie-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hover-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.movie-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.rating {
+  color: #46d369;
+}
+
+.movie-description {
+  font-size: 0.8rem;
+  color: #999;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
   }
 
-  .poster-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
+  .movie-title {
+    font-size: 0.8rem;
   }
+}
+
+@media (max-width: 480px) {
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+}
+
+.poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
