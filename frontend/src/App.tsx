@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import MovieList from './pages/MovieList';
 import Landing from './pages/Landing';
 import Admin from './pages/Admin';
+import CreateAccount from './pages/CreateAccount';
 
 // Import axios for global configuration
 import axios from 'axios';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/movies" element={<MovieList />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/create" element={<CreateAccount />} />
         {/* Add other routes as you build them */}
         {/* <Route path="/signup" element={<SignUp />} /> */}
         {/* <Route path="/movie/:id" element={<MovieDetail />} /> */}

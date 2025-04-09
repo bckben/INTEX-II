@@ -78,6 +78,10 @@ const Login: React.FC = () => {
                 Forgot password?
               </Link>
             </div>
+
+            <div className="account-redirect">
+              Don't have an account? <Link to="/create" className="signup-redirect-link">Sign Up</Link>
+            </div>
           </Form>
 
           <div className="divider">

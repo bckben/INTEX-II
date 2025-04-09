@@ -150,3 +150,19 @@
 .code-button:hover {
   background-color: #454545;
 }
+
+.signup-redirect-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.signup-redirect-link:hover {
+  text-decoration: underline;
+}
+
+.account-redirect {
+  text-align: center;
+  color: #b3b3b3;
+  font-size: 14px;
+  margin-top: 20px;
+}
