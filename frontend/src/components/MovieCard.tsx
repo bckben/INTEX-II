@@ -68,12 +68,21 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   };
 
   const handleRating = (num: number) => {
-    setUserRating(num);
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
-    storedRatings[selectedMovie?.show_id!] = num;
+    const currentId = selectedMovie?.show_id!;
+
+    if (userRating === num) {
+      // Unrate if the same star is clicked again
+      delete storedRatings[currentId];
+      setUserRating(0);
+    } else {
+      // Set new rating
+      storedRatings[currentId] = num;
+      setUserRating(num);
+    }
+
     localStorage.setItem('movieRatings', JSON.stringify(storedRatings));
   };
-
   if (!selectedMovie) return null;
   const activeGenres = getActiveGenres();
 

@@ -15,6 +15,7 @@ const Home: React.FC = () => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [recentlyRated, setRecentlyRated] = useState<Movie[]>([]);
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -52,8 +53,18 @@ const Home: React.FC = () => {
 
     if (movies.length > 0) {
       fetchRecommendations();
+      updateRecentlyRated();
     }
   }, [movies]);
+
+  const updateRecentlyRated = () => {
+    const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
+    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse();
+    const recent = ratedMovieIds
+      .map(id => movies.find(m => m.show_id === id))
+      .filter((m): m is Movie => Boolean(m));
+    setRecentlyRated(recent);
+  };
 
   const featuredMovie = movies.length > 0
     ? movies[Math.floor(Math.random() * movies.length)]
@@ -69,20 +80,13 @@ const Home: React.FC = () => {
     );
   };
 
-  const getRecentlyRatedMovies = (): Movie[] => {
-    const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
-    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse();
-    return ratedMovieIds
-      .map(id => movies.find(m => m.show_id === id))
-      .filter((m): m is Movie => Boolean(m));
-  };
-
   const handleMovieClick = (movie: Movie) => {
     setSelectedMovie(movie);
   };
 
   const handleCloseMovieCard = () => {
     setSelectedMovie(null);
+    updateRecentlyRated();
   };
 
   if (loading) {
@@ -124,11 +128,13 @@ const Home: React.FC = () => {
           />
         )}
 
-        <ContentRow
-          title="Recently Rated"
-          movies={getRecentlyRatedMovies()}
-          onMovieClick={handleMovieClick}
-        />
+        {recentlyRated.length > 0 && (
+          <ContentRow
+            title="Recently Rated"
+            movies={recentlyRated}
+            onMovieClick={handleMovieClick}
+          />
+        )}
 
         <ContentRow
           title="Trending Now"
