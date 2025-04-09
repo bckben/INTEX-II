@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { fetchAllMovies, fetchMovieById, Movie } from '../api/movieApi';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -7,10 +7,12 @@ import GenreSelector from '../components/GenreSelector';
 import MovieGrid from '../components/MovieGrid';
 import MovieCard from '../components/MovieCard';
 import './MovieList.css';
+import Fuse from 'fuse.js';
 
 const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const [fuzzySuggestions, setFuzzySuggestions] = useState<Movie[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<string>('All');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,9 +21,22 @@ const MovieList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [moviesPerPage, setMoviesPerPage] = useState<number>(100);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const navigate = useNavigate();
-  console.log(navigate); // temp use to avoid TS error
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get('search')?.toLowerCase() || '';
+
+  const filterAndSortMovies = (movies: Movie[], query: string): Movie[] => {
+    if (!query) return movies;
+
+    const lowerQuery = query.toLowerCase();
+
+    return movies.filter((movie) =>
+      (movie.title?.toLowerCase().includes(lowerQuery) ?? false) ||
+      (movie.cast?.toLowerCase().includes(lowerQuery) ?? false) ||
+      (movie.director?.toLowerCase().includes(lowerQuery) ?? false) ||
+      movie.release_year?.toString().includes(lowerQuery)
+    );
+  };
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -29,7 +44,6 @@ const MovieList: React.FC = () => {
         setLoading(true);
         const data = await fetchAllMovies();
         setMovies(data);
-        setFilteredMovies(data);
       } catch (err) {
         setError('Failed to load movies. Please try again later.');
         console.error(err);
@@ -42,25 +56,44 @@ const MovieList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let result = [...movies];
+    if (!loading && movies.length > 0) {
+      let result = [...movies];
 
-    if (selectedGenre !== 'All') {
-      result = result.filter((movie) =>
-        movie.type.toLowerCase() === selectedGenre.toLowerCase()
+      if (selectedGenre !== 'All') {
+        result = result.filter((movie) =>
+          movie.type.toLowerCase() === selectedGenre.toLowerCase()
+        );
+      }
+
+      let exactMatches = result;
+      if (searchQuery) {
+        exactMatches = filterAndSortMovies(result, searchQuery);
+      }
+
+      exactMatches.sort((a, b) =>
+        sortOrder === 'asc'
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title)
       );
+
+      setFilteredMovies(exactMatches);
+      setCurrentPage(1);
+
+      // Fuzzy fallback if no exact matches
+      if (searchQuery && exactMatches.length === 0) {
+        const fuse = new Fuse(result, {
+          threshold: 0.4,
+          keys: ['title', 'cast', 'director', 'release_year'],
+        });
+
+        const fuzzy = fuse.search(searchQuery).map(res => res.item);
+        setFuzzySuggestions(fuzzy.slice(0, 10));
+      } else {
+        setFuzzySuggestions([]);
+      }
     }
+  }, [loading, movies, selectedGenre, sortOrder, searchQuery]);
 
-    result.sort((a, b) =>
-      sortOrder === 'asc'
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title)
-    );
-
-    setFilteredMovies(result);
-    setCurrentPage(1); // Reset page when filter or sort changes
-  }, [movies, selectedGenre, sortOrder]);
-
-  // Pagination
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = filteredMovies.slice(indexOfFirstMovie, indexOfLastMovie);
@@ -98,7 +131,8 @@ const MovieList: React.FC = () => {
 
   return (
     <div className="movie-list-page">
-      <Navbar />
+      <Navbar onMovieClick={handleMovieClick} />
+
       <div className="container">
         <div className="header-section">
           <h1>{selectedGenre === 'All' ? 'All Movies' : `${selectedGenre} Movies`}</h1>
@@ -125,7 +159,17 @@ const MovieList: React.FC = () => {
         ) : error ? (
           <div className="error">{error}</div>
         ) : filteredMovies.length === 0 ? (
-          <div className="no-results">No movies found for the selected genre.</div>
+          <>
+            <div className="no-results">
+              No exact matches found for "<strong>{searchQuery}</strong>".
+            </div>
+            {fuzzySuggestions.length > 0 && (
+              <div className="fuzzy-suggestions">
+                <h5>You might be thinking of:</h5>
+                <MovieGrid movies={fuzzySuggestions} onMovieClick={handleMovieClick} />
+              </div>
+            )}
+          </>
         ) : (
           <>
             <div className="pagination-container">
@@ -137,11 +181,9 @@ const MovieList: React.FC = () => {
                 >
                   « Prev
                 </button>
-                
                 <span className="pagination-info">
                   Page {currentPage} of {totalPages} (Showing {startIndex}-{endIndex} of {filteredMovies.length})
                 </span>
-                
                 <button
                   className="page-nav"
                   disabled={currentPage === totalPages}
@@ -150,11 +192,10 @@ const MovieList: React.FC = () => {
                   Next »
                 </button>
               </div>
-              
               <div className="page-size-selector">
                 Movies per page:
-                <select 
-                  value={moviesPerPage} 
+                <select
+                  value={moviesPerPage}
                   onChange={(e) => setMoviesPerPage(Number(e.target.value))}
                 >
                   <option value={25}>25</option>
@@ -164,9 +205,9 @@ const MovieList: React.FC = () => {
                 </select>
               </div>
             </div>
-            
+
             <MovieGrid movies={currentMovies} onMovieClick={handleMovieClick} />
-            
+
             <div className="pagination-container">
               <div className="pagination-controls">
                 <button
@@ -176,11 +217,9 @@ const MovieList: React.FC = () => {
                 >
                   « Prev
                 </button>
-                
                 <span className="pagination-info">
                   Page {currentPage} of {totalPages} (Showing {startIndex}-{endIndex} of {filteredMovies.length})
                 </span>
-                
                 <button
                   className="page-nav"
                   disabled={currentPage === totalPages}

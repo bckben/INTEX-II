@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navbar, Nav, Container, Form, FormControl, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './NavBar.css';
+import { Movie, fetchAllMovies } from '../api/movieApi';
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  onMovieClick?: (showId: string) => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
+  const [searchResults, setSearchResults] = useState<Movie[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dropdownRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +29,65 @@ const NavBar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const query = queryParams.get('search') || '';
+    setSearchQuery(query);
+  }, [location.search]);
+
+  useEffect(() => {
+    const loadMovies = async () => {
+      const data = await fetchAllMovies();
+      setAllMovies(data);
+    };
+    loadMovies();
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const lowerQuery = searchQuery.toLowerCase();
+      const results = allMovies.filter(
+        (movie) =>
+          (movie.title?.toLowerCase().includes(lowerQuery) ?? false) ||
+          (movie.cast?.toLowerCase().includes(lowerQuery) ?? false) ||
+          (movie.director?.toLowerCase().includes(lowerQuery) ?? false)
+      );
+      setSearchResults(results.slice(0, 5));
+      setShowDropdown(true);
+    } else {
+      setSearchResults([]);
+      setShowDropdown(false);
+    }
+  }, [searchQuery, allMovies]);
+
+  // Close dropdown if user clicks outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleClear = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowDropdown(false);
+    navigate('/movies');
+  };
+
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (searchQuery.trim()) {
+        setShowDropdown(false);
+        navigate(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+      }
+    }
+  };
+
   return (
     <Navbar
       variant="dark"
@@ -24,13 +96,13 @@ const NavBar: React.FC = () => {
       className={`navbar-custom ${isScrolled ? 'navbar-scrolled' : ''}`}
     >
       <Container fluid>
-      <Navbar.Brand as={Link} to="/home" className="d-flex align-items-center">
-        <img
-          src="/assets/logo.png"
-          alt="CineNiche Logo"
-          className="navbar-logo me-2"
-        />
-      </Navbar.Brand>
+        <Navbar.Brand as={Link} to="/home" className="d-flex align-items-center">
+          <img
+            src="/assets/logo.png"
+            alt="CineNiche Logo"
+            className="navbar-logo me-2"
+          />
+        </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -42,17 +114,43 @@ const NavBar: React.FC = () => {
             <Nav.Link as={Link} to="/blog">Blog</Nav.Link>
           </Nav>
 
-          <Form className="d-flex me-3">
-            <FormControl
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-light">
-              <i className="bi bi-search"></i>
-            </Button>
-          </Form>
+          <div className="search-container position-relative me-3">
+            <Form className="d-flex">
+              <FormControl
+                type="search"
+                placeholder="Search"
+                className="me-2"
+                aria-label="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleEnter}
+              />
+              {searchQuery && (
+                <Button variant="outline-light" onClick={handleClear}>
+                  ✕
+                </Button>
+              )}
+            </Form>
+
+            {showDropdown && searchResults.length > 0 && (
+              <ul className="search-dropdown" ref={dropdownRef}>
+                {searchResults.map((movie) => (
+                  <li
+                    key={movie.show_id}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults([]);
+                      setShowDropdown(false);
+                      onMovieClick?.(movie.show_id);
+                    }}
+                    className="dropdown-item"
+                  >
+                    {movie.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {isLoggedIn ? (
             <div className="user-profile">

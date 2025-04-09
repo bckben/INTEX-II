@@ -135,6 +135,7 @@
   font-size: 0.95rem;
   color: #aaa;
 }
+
 .pagination-container {
   display: flex;
   position: relative;
@@ -152,4 +153,17 @@
   position: absolute;
   right: 0;
   margin-bottom: 0;
+}
+
+.fuzzy-suggestions {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.fuzzy-suggestions h5 {
+  margin-bottom: 1rem;
+  color: #ccc;
 }
