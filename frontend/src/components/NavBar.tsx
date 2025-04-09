@@ -84,6 +84,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
       if (searchQuery.trim()) {
         setShowDropdown(false);
         navigate(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };
@@ -142,6 +143,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
                       setSearchResults([]);
                       setShowDropdown(false);
                       onMovieClick?.(movie.show_id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     className="dropdown-item"
                   >

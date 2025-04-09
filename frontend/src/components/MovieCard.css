@@ -304,3 +304,21 @@
 .movie-cast .see-more:hover {
   text-decoration: underline;
 }
+
+.movie-card-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* Align to top */
+  padding-top: 100px;
+  /* <- Push modal below navbar */
+  z-index: 1050;
+  /* <- Make sure it's above the navbar */
+  backdrop-filter: blur(4px);
+}
