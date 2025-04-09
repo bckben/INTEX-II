@@ -1,3 +1,4 @@
+// MovieCard.tsx
 import React, { useEffect, useState } from 'react';
 import { Movie, fetchRecommendations, fetchAllMovies } from '../api/movieApi';
 import './MovieCard.css';
@@ -15,6 +16,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movie);
 
   const fallbackPoster = '/assets/movie_tape.jpg';
+
+  useEffect(() => {
+    const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
+    if (selectedMovie?.show_id && storedRatings[selectedMovie.show_id]) {
+      setUserRating(storedRatings[selectedMovie.show_id]);
+    }
+  }, [selectedMovie]);
 
   useEffect(() => {
     const loadAll = async () => {
@@ -53,11 +61,17 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
         value === 1 &&
         !['show_id', 'title', 'type', 'director', 'cast', 'country', 'release_year', 'rating', 'duration', 'description'].includes(key)
       ) {
-        const formatted = key.replace(/_/g, ' ').replace(/TV Shows/g, 'TV').replace(/International Movies/g, "Int'l Movies");
-        genres.push(formatted);
+        genres.push(key.replace(/_/g, ' '));
       }
     });
     return genres;
+  };
+
+  const handleRating = (num: number) => {
+    setUserRating(num);
+    const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
+    storedRatings[selectedMovie?.show_id!] = num;
+    localStorage.setItem('movieRatings', JSON.stringify(storedRatings));
   };
 
   if (!selectedMovie) return null;
@@ -67,7 +81,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
     <div className="movie-card-overlay" onClick={onClose}>
       <div className="movie-card-modal" onClick={(e) => e.stopPropagation()}>
         <button className="close-button" onClick={onClose}>&times;</button>
-
         <div className="movie-card-content">
           <div className="movie-poster-container">
             <img
@@ -83,71 +96,44 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
 
           <div className="movie-details">
             <h2>{selectedMovie.title}</h2>
-
             <div className="movie-meta-details">
               <span className="year">{selectedMovie.release_year}</span>
               <span className="rating">{selectedMovie.rating}</span>
               <span className="duration">{selectedMovie.duration}</span>
             </div>
-
             <p className="movie-description">{selectedMovie.description}</p>
-
-            <div className="movie-extra-details">
-              {selectedMovie.director && (
-                <div className="detail-item">
-                  <span className="label">Director:</span>
-                  <span>{selectedMovie.director}</span>
-                </div>
-              )}
-              {selectedMovie.cast && (
-                <div className="detail-item">
-                  <span className="label">Cast:</span>
-                  <span>{selectedMovie.cast}</span>
-                </div>
-              )}
-              {selectedMovie.country && (
-                <div className="detail-item">
-                  <span className="label">Country:</span>
-                  <span>{selectedMovie.country}</span>
-                </div>
-              )}
-              {selectedMovie.type && (
-                <div className="detail-item">
-                  <span className="label">Type:</span>
-                  <span>{selectedMovie.type}</span>
-                </div>
-              )}
-            </div>
 
             {activeGenres.length > 0 && (
               <div className="movie-genres">
                 <span className="label">Genres:</span>
                 <div className="genre-tags">
-                  {activeGenres.map((genre, index) => (
-                    <span key={index} className="genre-clip">{genre}</span>
+                  {activeGenres.map((genre, idx) => (
+                    <span key={idx} className="genre-clip">{genre}</span>
                   ))}
                 </div>
               </div>
             )}
 
+            {/* Rating */}
             <div className="rating-bar">
               <span className="label">Your Rating:</span>
               {[1, 2, 3, 4, 5].map((num) => (
                 <span
                   key={num}
                   className={`star ${userRating >= num ? 'filled' : ''}`}
-                  onClick={() => setUserRating(num)}
+                  onClick={() => handleRating(num)}
                 >
                   ★
                 </span>
               ))}
             </div>
 
+            {/* Recommendations */}
             <div className="recommendation-section">
               <h3>Recommended For You</h3>
               {loadingRecs ? (
                 <p className="rec-loading">Loading recommendations...</p>
-              ) : recommendations.length > 0 ? (
+              ) : (
                 <div className="recommendation-carousel">
                   {recommendations.slice(0, 10).map((title, idx) => {
                     const match = allMovies.find(m => m.title === title);
@@ -170,8 +156,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
                     );
                   })}
                 </div>
-              ) : (
-                <p className="no-recs">No recommendations found.</p>
               )}
             </div>
           </div>

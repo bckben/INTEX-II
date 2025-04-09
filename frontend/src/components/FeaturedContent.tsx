@@ -1,67 +1,56 @@
+// FeaturedContent.tsx
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Movie } from '../api/movieApi';
 import './FeaturedContent.css';
 
 interface FeaturedContentProps {
-  title: string;
-  description: string;
-  rating?: string;
-  duration?: string;
-  releaseYear?: number;
-  imageUrl?: string; // ✅ added
+  movie: Movie;
+  onMoreInfoClick: (movie: Movie) => void;
 }
 
-const FeaturedContent: React.FC<FeaturedContentProps> = ({
-  title,
-  description,
-  rating,
-  duration,
-  releaseYear,
-  imageUrl // ✅ added
-}) => {
+const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClick }) => {
   const fallbackPoster = '/assets/movie_tape.jpg';
 
-  const normalizeTitle = (input: string) =>
-    input.replace(/[^a-zA-Z0-9 ]/g, '').trim();
-
-  const normalized = normalizeTitle(title);
-  const posterUrl = imageUrl || `https://cineniche.blob.core.windows.net/posters/${normalized}.jpg`;
+  const getPosterUrl = (title: string) =>
+    `https://cineniche.blob.core.windows.net/posters/${title.replace(/[^a-zA-Z0-9 ]/g, '').trim()}.jpg`;
 
   return (
     <div className="featured-wrapper">
-      <div
-        className="featured-content"
-        style={{ backgroundImage: `url(${posterUrl})` }}
-        onError={(e: any) => {
-          e.target.style.backgroundImage = `url("${fallbackPoster}")`;
-        }}
-      >
-        <div className="featured-overlay">
-          <Container fluid>
-            <Row>
-              <Col md={6} lg={5} className="featured-text">
-                <h1>{title}</h1>
-                {(rating || duration || releaseYear) && (
-                  <div className="featured-meta">
-                    {releaseYear && <span className="year">{releaseYear}</span>}
-                    {rating && <span className="rating">{rating}</span>}
-                    {duration && <span className="duration">{duration}</span>}
-                  </div>
-                )}
-                <p className="featured-description">{description}</p>
-                <div className="featured-buttons">
-                  <Button variant="light" size="lg" className="me-2 play-btn">
-                    <i className="bi bi-play-fill"></i> Play
-                  </Button>
-                  <Button variant="secondary" size="lg" className="info-btn">
-                    <i className="bi bi-info-circle"></i> More Info
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </div>
+      <Container fluid className="featured-container">
+        <Row className="align-items-center gx-5">
+          <Col md={7} className="featured-text">
+            <h1 className="featured-title">{movie.title}</h1>
+            <div className="featured-meta">
+              {movie.release_year && <span className="year">{movie.release_year}</span>}
+              {movie.rating && <span className="rating">{movie.rating}</span>}
+              {movie.duration && <span className="duration">{movie.duration}</span>}
+            </div>
+            <p className="featured-description">{movie.description}</p>
+            <div className="featured-buttons">
+              <Button variant="light" size="lg" className="me-2 play-btn">
+                <i className="bi bi-play-fill"></i> Play
+              </Button>
+              <Button
+                variant="secondary"
+                size="lg"
+                className="info-btn"
+                onClick={() => onMoreInfoClick(movie)}
+              >
+                <i className="bi bi-info-circle"></i> More Info
+              </Button>
+            </div>
+          </Col>
+
+          <Col md={5} className="featured-poster">
+            <img
+              src={getPosterUrl(movie.title)}
+              alt={movie.title}
+              onError={(e) => (e.currentTarget.src = fallbackPoster)}
+            />
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
