@@ -6,9 +6,10 @@ interface ContentRowProps {
   title: string;
   movies: Movie[];
   onMovieClick?: (movie: Movie) => void;
+  disableShuffle?: boolean;
 }
 
-const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick }) => {
+const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick, disableShuffle = false }) => {
   const [displayMovies, setDisplayMovies] = useState<Movie[]>([]);
   const [visibleCount, setVisibleCount] = useState(50);
 
@@ -17,8 +18,12 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick }) 
     return `https://cineniche.blob.core.windows.net/posters/${normalized}.jpg`;
   };
 
-  // Shuffle once per session and store in sessionStorage
   useEffect(() => {
+    if (disableShuffle) {
+      setDisplayMovies(movies); // No shuffle for this row
+      return;
+    }
+
     const stored = sessionStorage.getItem(`row-${title}`);
     if (stored) {
       setDisplayMovies(JSON.parse(stored));
@@ -31,7 +36,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick }) 
       sessionStorage.setItem(`row-${title}`, JSON.stringify(shuffled));
       setDisplayMovies(shuffled);
     }
-  }, [title, movies]);
+  }, [title, movies, disableShuffle]);
 
   const handleSeeMore = () => {
     setVisibleCount((prev) => prev + 50);
@@ -63,7 +68,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick }) 
           </div>
         ))}
 
-        {visibleCount < displayMovies.length && (
+        {!disableShuffle && visibleCount < displayMovies.length && (
           <div className="see-more-card" onClick={handleSeeMore}>
             + See More
           </div>

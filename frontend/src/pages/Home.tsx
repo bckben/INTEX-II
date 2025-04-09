@@ -26,13 +26,15 @@ const Home: React.FC = () => {
         setLoading(true);
         const [movieData, ratingData] = await Promise.all([
           fetchAllMovies(),
-          axios.get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings').then(res => res.data)
+          axios
+            .get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings')
+            .then((res) => res.data),
         ]);
         setMovies(movieData);
         setRatings(ratingData);
       } catch (err) {
         console.error(err);
-        setError("Something went wrong loading movies.");
+        setError('Something went wrong loading movies.');
       } finally {
         setLoading(false);
       }
@@ -49,11 +51,11 @@ const Home: React.FC = () => {
       try {
         const recIds = await getUserRecommendations(parseInt(storedUserId));
         const matched = recIds
-          .map(id => movies.find(m => m.show_id === id))
+          .map((id) => movies.find((m) => m.show_id === id))
           .filter((m): m is Movie => Boolean(m));
         setRecommendedMovies(matched);
       } catch (err) {
-        console.error("Error fetching user recommendations:", err);
+        console.error('Error fetching user recommendations:', err);
       }
 
       updateRecentlyRated();
@@ -67,9 +69,9 @@ const Home: React.FC = () => {
   // Restore original behavior of updating recently rated from localStorage
   const updateRecentlyRated = () => {
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
-    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse();
+    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse(); // Most recent first
     const recent = ratedMovieIds
-      .map(id => movies.find(m => m.show_id === id))
+      .map((id) => movies.find((m) => m.show_id === id))
       .filter((m): m is Movie => Boolean(m));
     setRecentlyRated(recent);
   };
@@ -78,14 +80,13 @@ const Home: React.FC = () => {
 
   const handleCloseMovieCard = () => {
     setSelectedMovie(null);
-    updateRecentlyRated(); // refresh recently rated on close
+    updateRecentlyRated(); // Refresh Recently Rated after closing/rating
   };
 
   // Filters
-
   const trendingMovies = () => {
     const avgMap: Record<string, { total: number; count: number }> = {};
-    ratings.forEach(r => {
+    ratings.forEach((r) => {
       if (!avgMap[r.show_id]) avgMap[r.show_id] = { total: 0, count: 0 };
       avgMap[r.show_id].total += r.rating;
       avgMap[r.show_id].count += 1;
@@ -95,42 +96,39 @@ const Home: React.FC = () => {
       .filter(([_, { total, count }]) => count > 0 && total / count >= 4)
       .map(([id]) => id);
 
-    return movies.filter(m => topRatedIds.includes(m.show_id));
+    return movies.filter((m) => topRatedIds.includes(m.show_id));
   };
 
-  const classics = movies.filter(m => m.release_year >= 1950 && m.release_year <= 1990);
-  const newReleases = movies.filter(m => m.release_year >= 2020);
-  const tvShows = movies.filter(m => m.type?.toLowerCase() === 'tv show').slice(0, 25);
-
-  const familyMovies = movies.filter(
-    m => ['G', 'PG'].includes(m.rating?.toUpperCase() || '')
-  );
-
+  const classics = movies.filter((m) => m.release_year >= 1950 && m.release_year <= 1990);
+  const newReleases = movies.filter((m) => m.release_year >= 2020);
+  const tvShows = movies.filter((m) => m.type?.toLowerCase() === 'tv show').slice(0, 25);
+  const familyMovies = movies.filter((m) => ['G', 'PG'].includes(m.rating?.toUpperCase() || ''));
   const bingeWorthy = movies.filter(
-    m =>
+    (m) =>
       m.type?.toLowerCase() === 'tv show' &&
       /\d+\s*seasons?/i.test(m.duration) &&
       parseInt(m.duration.match(/\d+/)?.[0] || '0') >= 5
   );
 
-  if (loading) return (
-    <div className="loading-container">
-      <div className="spinner"></div>
-      <p>Loading amazing movies...</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading amazing movies...</p>
+      </div>
+    );
 
-  if (error) return (
-    <div className="error-container">
-      <h2>Oops!</h2>
-      <p>{error}</p>
-      <button onClick={() => window.location.reload()}>Try Again</button>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="error-container">
+        <h2>Oops!</h2>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
 
-  const featuredMovie = movies.length > 0
-    ? movies[Math.floor(Math.random() * movies.length)]
-    : null;
+  const featuredMovie =
+    movies.length > 0 ? movies[Math.floor(Math.random() * movies.length)] : null;
 
   return (
     <div className="home-page">
@@ -146,7 +144,12 @@ const Home: React.FC = () => {
         )}
 
         {recentlyRated.length > 0 && (
-          <ContentRow title="Recently Rated" movies={recentlyRated} onMovieClick={handleMovieClick} />
+          <ContentRow
+            title="Recently Rated"
+            movies={recentlyRated}
+            onMovieClick={handleMovieClick}
+            disableShuffle // 🚫 don't shuffle this row
+          />
         )}
 
         <ContentRow title="Trending Now" movies={trendingMovies()} onMovieClick={handleMovieClick} />
