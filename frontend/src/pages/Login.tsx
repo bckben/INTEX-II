@@ -12,6 +12,9 @@ const Login: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login attempt with:', { email, password, rememberMe });
+
+    // Simulate a login by storing user ID
+    localStorage.setItem('userId', '2'); // Replace with actual logic later
     navigate('/home');
   };
 

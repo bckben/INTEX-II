@@ -37,7 +37,43 @@ namespace CineNiche.Data
                 }
                 catch
                 {
-                    // Handle or log JSON parse error if needed
+                    // Optional: log or handle error
+                }
+            }
+
+            return results;
+        }
+
+        public List<string> GetUserRecommendations(int userId)
+        {
+            var results = new List<string>();
+
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+                SELECT recommendation
+                FROM user_recommendations
+                WHERE user_id = @userId
+            ";
+            command.Parameters.AddWithValue("@userId", userId);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                var json = reader.GetString(0);
+                try
+                {
+                    var recs = JsonSerializer.Deserialize<List<string>>(json);
+                    if (recs != null)
+                    {
+                        results = recs;
+                    }
+                }
+                catch
+                {
+                    // Optional: log or handle error
                 }
             }
 

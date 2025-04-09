@@ -7,9 +7,11 @@ import ContentRow from '../components/ContentRow';
 import Footer from '../components/Footer';
 import MovieCard from '../components/MovieCard';
 import { fetchAllMovies, Movie } from '../api/movieApi';
+import { getUserRecommendations } from '../api/recommendationApi';
 
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +33,27 @@ const Home: React.FC = () => {
 
     loadMovies();
   }, []);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      const storedUserId = localStorage.getItem('userId');
+      if (!storedUserId) return;
+
+      try {
+        const recommendedIds = await getUserRecommendations(parseInt(storedUserId));
+        const matched = recommendedIds
+          .map(id => movies.find(m => m.show_id === id))
+          .filter((m): m is Movie => Boolean(m));
+        setRecommendedMovies(matched);
+      } catch (err) {
+        console.error("Error fetching user recommendations:", err);
+      }
+    };
+
+    if (movies.length > 0) {
+      fetchRecommendations();
+    }
+  }, [movies]);
 
   const featuredMovie = movies.length > 0
     ? movies[Math.floor(Math.random() * movies.length)]
@@ -93,6 +116,14 @@ const Home: React.FC = () => {
       )}
 
       <Container fluid className="content-container">
+        {recommendedMovies.length > 0 && (
+          <ContentRow
+            title="Recommended for You"
+            movies={recommendedMovies}
+            onMovieClick={handleMovieClick}
+          />
+        )}
+
         <ContentRow
           title="Recently Rated"
           movies={getRecentlyRatedMovies()}

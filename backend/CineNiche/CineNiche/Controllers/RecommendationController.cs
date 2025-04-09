@@ -26,5 +26,15 @@ namespace CineNiche.Controllers
 
             return Ok(recs);
         }
+
+        [HttpGet("User/{userId}")]
+        public IActionResult GetUserRecs(int userId)
+        {
+            var recs = _service.GetUserRecommendations(userId);
+            if (recs == null || recs.Count == 0)
+                return NotFound("No recommendations found for this user.");
+
+            return Ok(recs);
+        }
     }
 }
