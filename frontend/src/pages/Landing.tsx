@@ -11,7 +11,9 @@ const Landing: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email submitted:', email);
+    // Navigate to the CreateAccount page with the email as a URL parameter
+    // Using the correct route path from App.tsx (/create instead of /create-account)
+    window.location.href = `/create?email=${encodeURIComponent(email)}`;
   };
 
   return (
