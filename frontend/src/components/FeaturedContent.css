@@ -95,3 +95,26 @@
     margin-top: 20px;
   }
 }
+
+.poster-frame {
+  width: 300px;
+  height: 460px;
+  background-color: #141414;
+  /* same as main background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0 auto;
+  box-shadow: none;
+}
+
+.poster-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: none;
+  /* removes internal image shadow */
+}

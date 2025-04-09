@@ -43,11 +43,13 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClic
           </Col>
 
           <Col md={5} className="featured-poster">
-            <img
-              src={getPosterUrl(movie.title)}
-              alt={movie.title}
-              onError={(e) => (e.currentTarget.src = fallbackPoster)}
-            />
+            <div className="poster-frame">
+              <img
+                src={getPosterUrl(movie.title)}
+                alt={movie.title}
+                onError={(e) => (e.currentTarget.src = fallbackPoster)}
+              />
+            </div>
           </Col>
         </Row>
       </Container>
