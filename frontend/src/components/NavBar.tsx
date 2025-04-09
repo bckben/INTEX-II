@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/home">Home</Nav.Link>
             <Nav.Link as={Link} to="/movies">All Movies</Nav.Link>
-            <Nav.Link as={Link} to="/retro">Retro Flashback</Nav.Link>
+            <Nav.Link as={Link} to="/admin">Retro Flashback</Nav.Link>
             <Nav.Link as={Link} to="/gallery">Gallery</Nav.Link>
             <Nav.Link as={Link} to="/blog">Blog</Nav.Link>
           </Nav>
@@ -72,7 +72,7 @@ const NavBar: React.FC = () => {
           ) : (
             <Button
               as={Link as any}
-              to="/"
+              to="/login"
               variant="danger"
               className="logout-button"
             >
