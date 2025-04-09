@@ -278,3 +278,29 @@
   background: rgba(0, 0, 0, 0.7);
   text-align: center;
 }
+
+.movie-director,
+.movie-cast {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.movie-director strong,
+.movie-cast strong {
+  color: #999;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.movie-cast .see-more {
+  color: #46d369;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 0.95rem;
+}
+
+.movie-cast .see-more:hover {
+  text-decoration: underline;
+}

@@ -1,4 +1,3 @@
-// MovieCard.tsx
 import React, { useEffect, useState } from 'react';
 import { Movie, fetchRecommendations, fetchAllMovies } from '../api/movieApi';
 import './MovieCard.css';
@@ -14,6 +13,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   const [userRating, setUserRating] = useState<number>(0);
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movie);
+  const [showFullCast, setShowFullCast] = useState(false);
 
   const fallbackPoster = '/assets/movie_tape.jpg';
 
@@ -70,21 +70,23 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   const handleRating = (num: number) => {
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
     const currentId = selectedMovie?.show_id!;
-
     if (userRating === num) {
-      // Unrate if the same star is clicked again
       delete storedRatings[currentId];
       setUserRating(0);
     } else {
-      // Set new rating
       storedRatings[currentId] = num;
       setUserRating(num);
     }
-
     localStorage.setItem('movieRatings', JSON.stringify(storedRatings));
   };
+
   if (!selectedMovie) return null;
+
   const activeGenres = getActiveGenres();
+
+  const rawCast = selectedMovie.cast || '';
+  const shouldTruncate = rawCast.length > 25;
+  const visibleCast = showFullCast || !shouldTruncate ? rawCast : rawCast.slice(0, 25) + '...';
 
   return (
     <div className="movie-card-overlay" onClick={onClose}>
@@ -112,6 +114,27 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
             </div>
             <p className="movie-description">{selectedMovie.description}</p>
 
+            {selectedMovie.director && (
+              <p className="movie-director">
+                <strong>Director:</strong> {selectedMovie.director}
+              </p>
+            )}
+
+            {rawCast && (
+              <p className="movie-cast">
+                <strong>Cast:</strong> {visibleCast}{' '}
+                {shouldTruncate && (
+                  <span
+                    className="see-more"
+                    onClick={() => setShowFullCast(prev => !prev)}
+                    style={{ color: '#999', cursor: 'pointer' }}
+                  >
+                    ({showFullCast ? 'see less' : 'see more'})
+                  </span>
+                )}
+              </p>
+            )}
+
             {activeGenres.length > 0 && (
               <div className="movie-genres">
                 <span className="label">Genres:</span>
@@ -123,7 +146,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
               </div>
             )}
 
-            {/* Rating */}
             <div className="rating-bar">
               <span className="label">Your Rating:</span>
               {[1, 2, 3, 4, 5].map((num) => (
@@ -137,7 +159,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
               ))}
             </div>
 
-            {/* Recommendations */}
             <div className="recommendation-section">
               <h3>Recommended For You</h3>
               {loadingRecs ? (
