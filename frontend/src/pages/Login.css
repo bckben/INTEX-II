@@ -46,22 +46,46 @@
   margin-bottom: 30px;
 }
 
+/* UPDATED: Fixed input text color issues */
 .login-input {
   background-color: #333;
   border: none;
   border-radius: 4px;
-  color: #fff;
+  color: #fff !important; /* !important ensures this style takes precedence */
   height: 50px;
   padding: 10px 15px;
   font-size: 16px;
   width: 100%;
+  caret-color: #fff; /* Makes cursor white */
 }
 
-.login-input:focus {
+/* UPDATED: Added explicit styles for all input states */
+.login-input:hover,
+.login-input:active,
+.login-input:focus,
+.login-input:focus-within {
   background-color: #454545;
+  color: #fff !important;
   outline: none;
   box-shadow: none;
   border: 1px solid #fff;
+}
+
+/* UPDATED: Added placeholder styling */
+.login-input::placeholder {
+  color: #8c8c8c;
+  opacity: 1; /* Some browsers apply opacity to placeholder */
+}
+
+/* UPDATED: Override React Bootstrap Form Control styles that might interfere */
+.form-control {
+  color: #fff !important;
+  background-color: #333;
+}
+
+.form-control:focus {
+  color: #fff !important;
+  background-color: #454545;
 }
 
 /* BUTTONS */
@@ -149,4 +173,30 @@
 
 .code-button:hover {
   background-color: #454545;
+}
+
+.signup-redirect-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.signup-redirect-link:hover {
+  text-decoration: underline;
+}
+
+.account-redirect {
+  text-align: center;
+  color: #b3b3b3;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* UPDATED: Force browser autofill to maintain our dark theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #fff !important;
+  -webkit-box-shadow: 0 0 0 30px #333 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

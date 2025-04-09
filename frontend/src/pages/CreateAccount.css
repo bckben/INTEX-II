@@ -1,0 +1,158 @@
+/* FULL PAGE LAYOUT */
+.create-account-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+  }
+  
+  /* HEADER: Logo sticks top-left */
+  .create-account-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 40px;
+  }
+  
+  .navbar-logo {
+    height: 80px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  
+  /* FORM: Center in screen */
+  .create-account-form-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+  
+  .create-account-form-inner {
+    width: 100%;
+    max-width: 380px;
+    padding: 20px;
+  }
+  
+  /* TEXT & INPUTS */
+  .create-account-title {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+  
+  /* UPDATED: Fixed input text color issues */
+  .create-account-input {
+    background-color: #333;
+    border: none;
+    border-radius: 4px;
+    color: #fff !important; /* !important ensures this style takes precedence */
+    height: 50px;
+    padding: 10px 15px;
+    font-size: 16px;
+    width: 100%;
+    caret-color: #fff; /* Makes cursor white */
+  }
+  
+  /* UPDATED: Added explicit styles for all input states */
+  .create-account-input:hover,
+  .create-account-input:active,
+  .create-account-input:focus,
+  .create-account-input:focus-within {
+    background-color: #454545;
+    color: #fff !important;
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #fff;
+  }
+  
+  /* UPDATED: Added placeholder styling */
+  .create-account-input::placeholder {
+    color: #8c8c8c;
+    opacity: 1; /* Some browsers apply opacity to placeholder */
+  }
+  
+  /* UPDATED: Override React Bootstrap Form Control styles that might interfere */
+  .form-control {
+    color: #fff !important;
+    background-color: #333;
+  }
+  
+  .form-control:focus {
+    color: #fff !important;
+    background-color: #454545;
+  }
+  
+  /* BUTTONS */
+  .create-account-button {
+    background-color: #e50914;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  .create-account-button:hover {
+    background-color: #f40612;
+  }
+  
+  .create-account-button:disabled {
+    background-color: #7c050a;
+    cursor: not-allowed;
+  }
+  
+  /* TERMS CHECKBOX */
+  .terms-container {
+    margin-top: 10px;
+  }
+  
+  .agree-terms {
+    color: #b3b3b3;
+    margin-bottom: 0;
+  }
+  
+  .form-check-input {
+    background-color: #333;
+    border-color: #737373;
+  }
+  
+  .form-check-input:checked {
+    background-color: #e50914;
+    border-color: #e50914;
+  }
+  
+  /* ALREADY HAVE ACCOUNT */
+  .account-exists {
+    text-align: center;
+    color: #b3b3b3;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  
+  .login-redirect-link {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .login-redirect-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* UPDATED: Force browser autofill to maintain our dark theme */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 30px #333 inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
