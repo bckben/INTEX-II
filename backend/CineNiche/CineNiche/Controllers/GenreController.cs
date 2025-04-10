@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using CineNiche.Models;
 
 namespace CineNiche.Controllers
@@ -15,7 +16,9 @@ namespace CineNiche.Controllers
             _context = context;
         }
 
+        // Publicly accessible: filter movies by genre
         [HttpGet("{genreName}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<movies_title>>> GetByGenre(string genreName)
         {
             var movies = await _context.movies_titles.ToListAsync();

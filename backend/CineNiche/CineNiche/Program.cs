@@ -1,50 +1,113 @@
 using CineNiche.Models;
-using CineNiche.Data; // <-- Add this to use RecommendationService
+using CineNiche.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DbContext with SQLite connection string from configuration
+// === DATABASE CONFIGURATION ===
+
+// Movie data context
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register RecommendationService
+// Identity data context
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+// === SERVICES ===
 builder.Services.AddSingleton<RecommendationService>();
 
-// Add controllers and Swagger
+// Add Identity
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Authentication must be added before Authorization!
+builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
+builder.Services.AddAuthorization();
+
+// Password policy
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 13;
+});
+
+// Swagger + API
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS setup (update with your frontend URLs)
+// CORS for your frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:5173", "https://happy-rock-014679d1e.6.azurestaticapps.net")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Required for cookies!
     });
 });
 
 var app = builder.Build();
 
-// Middleware configuration
+// === SEED ADMIN ROLE + USER ===
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-// Force HTTPS
+    string adminEmail = "admin@cineniche.com";
+    string adminPassword = "SecureMovie123!";
+
+    // Create Admin role
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    // Create Admin user if not found
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else
+    {
+        // Ensure admin role assigned
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+}
+
+// === MIDDLEWARE ===
 app.UseHttpsRedirection();
-
-// Enable Swagger (in all environments – change if you want it dev-only)
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// Use CORS
 app.UseCors("AllowFrontend");
-
-// Authorization (placeholder – needed for Identity)
+app.UseAuthentication(); // 🔥 MUST come before Authorization
 app.UseAuthorization();
 
-// Map controller endpoints
 app.MapControllers();
+app.MapIdentityApi<ApplicationUser>();
 
 app.Run();
