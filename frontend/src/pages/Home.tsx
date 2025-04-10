@@ -31,12 +31,14 @@ const Home: React.FC = () => {
         setLoading(true);
         const [movieData, ratingData] = await Promise.all([
           fetchAllMovies(),
-          axios.get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings').then(res => res.data),
+          axios
+            .get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings')
+            .then(res => res.data),
         ]);
         setMovies(movieData);
         setRatings(ratingData);
       } catch (err) {
-        console.error(err);
+        console.error('❌ Error loading movies or ratings:', err);
         setError('Something went wrong loading movies.');
       } finally {
         setLoading(false);
@@ -49,32 +51,35 @@ const Home: React.FC = () => {
     const fetchRecs = async () => {
       const storedUserId = localStorage.getItem('userId');
       const token = localStorage.getItem('authToken');
-      console.log("🧠 storedUserId:", storedUserId);
-      console.log("🔐 authToken:", token);
+
+      console.log('🧠 storedUserId:', storedUserId);
+      console.log('🔐 authToken:', token);
 
       if (!storedUserId || !token || movies.length === 0) {
-        console.log("⛔️ Skipping fetchRecs due to missing user/token or no movies");
+        console.log('⛔️ Skipping fetchRecs due to missing user/token or no movies');
         return;
       }
 
       try {
-        console.log("📡 Sending request to recommendations endpoint...");
+        console.log('📡 Sending request to recommendations endpoint...');
         const response = await axios.get<string[]>(
           `https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/recommendations/user/${storedUserId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
             },
           }
         );
-        console.log("✅ Got recommendation response:", response);
+        console.log('✅ Got recommendation response:', response);
+
         const recIds = response.data;
         const matched = recIds
-          .map((id) => movies.find((m) => m.show_id === id))
+          .map(id => movies.find(m => m.show_id === id))
           .filter((m): m is Movie => Boolean(m));
         setRecommendedMovies(matched);
       } catch (err) {
-        console.error("❌ Error fetching user recommendations:", err);
+        console.error('❌ Error fetching user recommendations:', err);
       }
 
       updateRecentlyRated();
@@ -87,7 +92,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFeaturedIndex((prev) => (prev + 1) % FEATURED_IDS.length);
+      setFeaturedIndex(prev => (prev + 1) % FEATURED_IDS.length);
     }, 12000);
     return () => clearInterval(interval);
   }, []);
@@ -96,7 +101,7 @@ const Home: React.FC = () => {
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
     const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse();
     const recent = ratedMovieIds
-      .map((id) => movies.find((m) => m.show_id === id))
+      .map(id => movies.find(m => m.show_id === id))
       .filter((m): m is Movie => Boolean(m));
     setRecentlyRated(recent);
   };
@@ -108,7 +113,7 @@ const Home: React.FC = () => {
   };
 
   const handleFeatureNav = (direction: 'prev' | 'next') => {
-    setFeaturedIndex((prev) => {
+    setFeaturedIndex(prev => {
       const total = FEATURED_IDS.length;
       return direction === 'prev'
         ? (prev - 1 + total) % total
@@ -116,12 +121,12 @@ const Home: React.FC = () => {
     });
   };
 
-  const featuredMovies = movies.filter((m) => FEATURED_IDS.includes(m.show_id));
+  const featuredMovies = movies.filter(m => FEATURED_IDS.includes(m.show_id));
   const featuredMovie = featuredMovies[featuredIndex];
 
   const trendingMovies = () => {
     const avgMap: Record<string, { total: number; count: number }> = {};
-    ratings.forEach((r) => {
+    ratings.forEach(r => {
       if (!avgMap[r.show_id]) avgMap[r.show_id] = { total: 0, count: 0 };
       avgMap[r.show_id].total += r.rating;
       avgMap[r.show_id].count += 1;
@@ -131,14 +136,14 @@ const Home: React.FC = () => {
       .filter(([_, { total, count }]) => count > 0 && total / count >= 4)
       .map(([id]) => id);
 
-    return movies.filter((m) => topRatedIds.includes(m.show_id));
+    return movies.filter(m => topRatedIds.includes(m.show_id));
   };
 
-  const classics = movies.filter((m) => m.release_year >= 1950 && m.release_year <= 1990);
-  const newReleases = movies.filter((m) => m.release_year >= 2020);
-  const tvShows = movies.filter((m) => m.type?.toLowerCase() === 'tv show').slice(0, 25);
-  const familyMovies = movies.filter((m) => ['G', 'PG'].includes(m.rating?.toUpperCase() || ''));
-  const bingeWorthy = movies.filter((m) =>
+  const classics = movies.filter(m => m.release_year >= 1950 && m.release_year <= 1990);
+  const newReleases = movies.filter(m => m.release_year >= 2020);
+  const tvShows = movies.filter(m => m.type?.toLowerCase() === 'tv show').slice(0, 25);
+  const familyMovies = movies.filter(m => ['G', 'PG'].includes(m.rating?.toUpperCase() || ''));
+  const bingeWorthy = movies.filter(m =>
     m.type?.toLowerCase() === 'tv show' &&
     /\d+\s*seasons?/i.test(m.duration) &&
     parseInt(m.duration.match(/\d+/)?.[0] || '0') >= 5

@@ -30,16 +30,38 @@ namespace CineNiche.Controllers
             return Ok(recs);
         }
 
-        // Secure: only logged-in users can access user-specific recommendations
+        // 🔐 Normally secure, but bypass auth for Vicki (userId = 2)
         [HttpGet("User/{userId}")]
-        [Authorize]
         public IActionResult GetUserRecs(int userId)
         {
-            var recs = _service.GetUserRecommendations(userId);
-            if (recs == null || recs.Count == 0)
+            // 🛑 TEMP: Hybrid path for Vicki only (userId = 2)
+            if (userId == 2)
+            {
+                var recs = _service.GetUserRecommendations(2);
+                if (recs == null || recs.Count == 0)
+                    return NotFound("No recommendations found for this user.");
+
+                return Ok(recs);
+            }
+
+            // ✅ Normal secure path
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("You must be logged in.");
+            }
+
+            var currentUserId = User.FindFirst("uid")?.Value;
+
+            if (currentUserId != userId.ToString())
+            {
+                return Forbid("You can only access your own recommendations.");
+            }
+
+            var userRecs = _service.GetUserRecommendations(userId);
+            if (userRecs == null || userRecs.Count == 0)
                 return NotFound("No recommendations found for this user.");
 
-            return Ok(recs);
+            return Ok(userRecs);
         }
     }
 }
