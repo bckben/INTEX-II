@@ -7,6 +7,181 @@ interface MovieCardProps {
   onClose: () => void;
 }
 
+const genreMessages: Record<string, string[]> = {
+  Action: [
+    "The adrenaline keeps pumping!",
+    "More high-stakes action on deck.",
+    "If that got your blood pumping..."
+  ],
+  Adventure: [
+    "More epic quests await!",
+    "Adventure is just beginning...",
+    "Grab your gear—more thrills ahead!"
+  ],
+  "Anime Series International TV Shows": [
+    "Anime dreams unlocked!",
+    "Global hits, anime vibes!",
+    "Next-level stories from around the world."
+  ],
+  "British TV Shows Docuseries International TV Shows": [
+    "Class, drama, and tea incoming.",
+    "British brilliance continues...",
+    "More UK gems just for you."
+  ],
+  Children: [
+    "Wholesome fun continues!",
+    "Big adventures for little hearts!",
+    "Keep the smiles going!"
+  ],
+  Comedies: [
+    "Keep the giggles going!",
+    "More laughs on the way!",
+    "Comedy gold, part two."
+  ],
+  "Comedies Dramas International Movies": [
+    "Laugh. Cry. Repeat.",
+    "Globally hilarious & heartfelt.",
+    "The best of both moods—next up!"
+  ],
+  "Comedies International Movies": [
+    "Across the globe, laughs continue!",
+    "Next stop: global giggles.",
+    "More international humor ahead!"
+  ],
+  "Comedies Romantic Movies": [
+    "More swoon-worthy laughs ahead!",
+    "Love and laughs? Say less.",
+    "Your rom-com fix is back!"
+  ],
+  "Crime TV Shows Docuseries": [
+    "More mysteries to uncover...",
+    "Truth is stranger than fiction.",
+    "Next case is ready. You in?"
+  ],
+  Documentaries: [
+    "Get ready to learn something new.",
+    "Real stories, deeper truths.",
+    "More eye-opening tales await."
+  ],
+  "Documentaries International Movies": [
+    "True stories from across the globe.",
+    "Global docs, global impact.",
+    "Witness the world through film."
+  ],
+  Docuseries: [
+    "Binge-worthy truths continue.",
+    "Facts. Drama. Rewatchable.",
+    "Dig deeper into real life."
+  ],
+  Dramas: [
+    "More gripping stories ahead...",
+    "Ready to feel all the feels again?",
+    "For fans of heart and soul."
+  ],
+  "Dramas International Movies": [
+    "Global drama, universal emotions.",
+    "Stories that speak every language.",
+    "Tears, truths, and tales worldwide."
+  ],
+  "Dramas Romantic Movies": [
+    "Love stories that linger...",
+    "Drama + romance = can't miss.",
+    "Your heart’s next obsession."
+  ],
+  "Family Movies": [
+    "Wholesome picks for movie night!",
+    "Perfect for all ages.",
+    "The whole crew will love these!"
+  ],
+  Fantasy: [
+    "More magic and mystery!",
+    "Fantasy fans, your quest continues!",
+    "Enchanted worlds await!"
+  ],
+  "Horror Movies": [
+    "If you survived that, try these...",
+    "Nightmares not over yet...",
+    "Keep the terror rolling..."
+  ],
+  "International Movies Thrillers": [
+    "Edge-of-your-seat... internationally.",
+    "Globally suspenseful and gripping.",
+    "Thrills with an international twist."
+  ],
+  "International TV Shows Romantic TV Shows TV Dramas": [
+    "Global love stories incoming.",
+    "Drama, romance, and subtitles? Yes.",
+    "More international passion awaits."
+  ],
+  "Kids' TV": [
+    "More fun for little movie buffs!",
+    "Cartoons, magic, and smiles ahead!",
+    "Kid-friendly picks you'll adore."
+  ],
+  "Language TV Shows": [
+    "More shows to broaden your world.",
+    "Discover stories across cultures.",
+    "Subtitles never looked so good."
+  ],
+  Musicals: [
+    "Sing along to your next favorite!",
+    "More toe-tapping tunes await.",
+    "Encore! Encore!"
+  ],
+  "Nature TV": [
+    "Nature never stops wowing us.",
+    "Explore Earth from your couch.",
+    "Get wild with more amazing views."
+  ],
+  "Reality TV": [
+    "The drama isn’t over yet...",
+    "More unscripted chaos incoming!",
+    "Guilty pleasures never looked better."
+  ],
+  Spirituality: [
+    "Reflect. Discover. Connect.",
+    "Your next soul-nourishing watch awaits.",
+    "Find peace in these picks."
+  ],
+  "TV Action": [
+    "Adrenaline-fueled episodes ahead!",
+    "The action series you crave continues.",
+    "Binge-worthy explosions incoming!"
+  ],
+  "TV Comedies": [
+    "Laugh track ready.",
+    "Binge-worthy funny business ahead.",
+    "Your favorite sitcoms just got company."
+  ],
+  "TV Dramas": [
+    "Episodes that hit hard.",
+    "More character-driven greatness awaits.",
+    "TV drama at its finest."
+  ],
+  "Talk Shows TV Comedies": [
+    "Hot takes and hilarious guests.",
+    "More late-night laughs await!",
+    "Talk the talk with these picks."
+  ],
+  Thrillers: [
+    "Edge-of-your-seat action continues...",
+    "Still reeling? These will keep you guessing.",
+    "More twists and turns await."
+  ]
+};
+
+const genrePriority = [
+  "Action", "Adventure", "Thrillers", "Drama", "Dramas", "Horror Movies", "Children", "Kids' TV",
+  "Comedies", "Romance", "Family Movies", "Fantasy", "Anime",
+  "Documentaries", "TV Action", "TV Dramas", "TV Comedies",
+  "Talk Shows TV Comedies", "Docuseries", "Crime TV Shows Docuseries",
+  "Reality TV", "Spirituality", "Musicals", "Language TV Shows", "Nature TV",
+  "Comedies Romantic Movies", "Comedies Dramas International Movies",
+  "British TV Shows Docuseries International TV Shows", "International Movies Thrillers",
+  "Dramas International Movies", "Comedies International Movies",
+  "Documentaries International Movies", "International TV Shows Romantic TV Shows TV Dramas"
+];
+
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(true);
@@ -14,6 +189,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movie);
   const [showFullCast, setShowFullCast] = useState(false);
+  const [recommendationMessage, setRecommendationMessage] = useState<string>("");
 
   const fallbackPoster = '/assets/movie_tape.jpg';
 
@@ -72,6 +248,25 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
     return genres;
   };
 
+  useEffect(() => {
+    if (selectedMovie) {
+      const activeGenres = getActiveGenres();
+
+      // Find the first genre from the priority list that matches
+      const bestGenre = genrePriority.find((priority) =>
+        activeGenres.includes(priority)
+      );
+
+      if (bestGenre && genreMessages[bestGenre]) {
+        const messages = genreMessages[bestGenre];
+        const message = messages[Math.floor(Math.random() * messages.length)];
+        setRecommendationMessage(message);
+      } else {
+        setRecommendationMessage("Movies you'll enjoy next...");
+      }
+    }
+  }, [selectedMovie]);
+
   const handleRating = (num: number) => {
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
     const currentId = selectedMovie?.show_id!;
@@ -88,7 +283,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
   if (!selectedMovie) return null;
 
   const activeGenres = getActiveGenres();
-
   const rawCast = selectedMovie.cast || '';
   const shouldTruncate = rawCast.length > 25;
   const visibleCast = showFullCast || !shouldTruncate ? rawCast : rawCast.slice(0, 25) + '...';
@@ -165,7 +359,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
             </div>
 
             <div className="recommendation-section">
-              <h3>Recommended For You</h3>
+              <h3>{recommendationMessage}</h3>
               {loadingRecs ? (
                 <p className="rec-loading">Loading recommendations...</p>
               ) : (
