@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
           <Col md={4}>
             <h5>Quick Links</h5>
             <ul className="footer-links">
-              <li><a href="/film-reviews">Film Reviews</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
               <li><a href="/study-on-fear">A Study On Fear</a></li>
               <li><a href="/fake-criterion">Fake Criterions & Images</a></li>
               <li><a href="/shop">Etsy Shop</a></li>

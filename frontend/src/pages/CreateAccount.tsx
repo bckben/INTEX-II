@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { registerUser } from '../api/registrationApi';
 import './CreateAccount.css';
 
 const CreateAccount: React.FC = () => {
@@ -10,22 +11,67 @@ const CreateAccount: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Extract email from URL parameters on component mount
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const emailParam = queryParams.get('email');
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [location]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset error state
+    setError('');
     
     // Validate password match
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
     
-    console.log('Account creation with:', { name, phone, email, password, agreeTerms });
-
-    // Simulate successful registration
-    localStorage.setItem('userId', '3'); // Replace with actual logic later
-    navigate('/home');
+    // Ensure terms are agreed to
+    if (!agreeTerms) {
+      setError('You must agree to the Terms of Service');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      // Call the registration endpoint
+      const response = await registerUser({
+        name,
+        phone,
+        email,
+        password
+      });
+      
+      if (response.success) {
+        console.log('Account creation successful:', response);
+        
+        // Store user ID from response
+        localStorage.setItem('userId', response.user_id.toString());
+        
+        // Redirect to home page
+        navigate('/home');
+      } else {
+        // Handle unsuccessful registration
+        setError(response.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,6 +90,12 @@ const CreateAccount: React.FC = () => {
         <div className="create-account-form-inner">
           <h1 className="create-account-title">Create Account</h1>
 
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Control
@@ -53,6 +105,7 @@ const CreateAccount: React.FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="create-account-input"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -64,6 +117,7 @@ const CreateAccount: React.FC = () => {
                 onChange={(e) => setPhone(e.target.value)}
                 required
                 className="create-account-input"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -75,6 +129,7 @@ const CreateAccount: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="create-account-input"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -86,6 +141,7 @@ const CreateAccount: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="create-account-input"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -97,6 +153,7 @@ const CreateAccount: React.FC = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="create-account-input"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -104,11 +161,12 @@ const CreateAccount: React.FC = () => {
               <Form.Check
                 type="checkbox"
                 id="agree-terms"
-                label="I agree to the Terms of Service"
+                label={<>I agree to the <Link to="/privacy" className="terms-link">Terms of Service</Link></>}
                 checked={agreeTerms}
                 onChange={(e) => setAgreeTerms(e.target.checked)}
                 required
                 className="agree-terms"
+                disabled={loading}
               />
             </Form.Group>
 
@@ -116,9 +174,9 @@ const CreateAccount: React.FC = () => {
               variant="danger"
               type="submit"
               className="create-account-button w-100"
-              disabled={!agreeTerms}
+              disabled={!agreeTerms || loading}
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </Form>
 
