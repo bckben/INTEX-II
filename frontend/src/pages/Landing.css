@@ -201,3 +201,25 @@
   margin-right: 10px;
   border-radius: 10px;
 }
+
+.sign-in-button {
+  background-color: #e50914;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sign-in-button:hover {
+  background-color: #f40612;
+  color: white;
+  /* This is the key line */
+  text-decoration: none;
+}
+
+.get-started-button:hover {
+  background-color: #f40612;
+  color: white;
+}
