@@ -118,3 +118,61 @@
   box-shadow: none;
   /* removes internal image shadow */
 }
+
+.arrow-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 60px;
+  min-width: 60px;
+}
+
+.carousel-arrow {
+  font-size: 3rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.carousel-arrow:hover {
+  transform: scale(1.2);
+  color: #e50914;
+}
+
+/* === Responsive Tweaks === */
+@media (max-width: 768px) {
+  .featured-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .featured-text {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .featured-text h1 {
+    font-size: 2rem;
+  }
+
+  .featured-description {
+    font-size: 1rem;
+  }
+
+  .featured-poster img {
+    max-width: 80%;
+    margin-top: 20px;
+  }
+
+  .arrow-col {
+    margin-top: 30px;
+  }
+
+  .carousel-arrow {
+    font-size: 2.5rem;
+  }
+}

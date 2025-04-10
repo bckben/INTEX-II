@@ -10,25 +10,28 @@ import { fetchAllMovies, Movie, MovieRating } from '../api/movieApi';
 import { getUserRecommendations } from '../api/recommendationApi';
 import axios from 'axios';
 
+const FEATURED_IDS = [
+  's341', 's356', 's1334', 's2520', 's2583',
+  's8069', 's8581', 's330', 's574', 's7073', 's1359'
+];
+
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [ratings, setRatings] = useState<MovieRating[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [recentlyRated, setRecentlyRated] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [featuredIndex, setFeaturedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load all movies + all ratings
   useEffect(() => {
     const loadAll = async () => {
       try {
         setLoading(true);
         const [movieData, ratingData] = await Promise.all([
           fetchAllMovies(),
-          axios
-            .get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings')
-            .then((res) => res.data),
+          axios.get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings').then(res => res.data),
         ]);
         setMovies(movieData);
         setRatings(ratingData);
@@ -42,7 +45,6 @@ const Home: React.FC = () => {
     loadAll();
   }, []);
 
-  // Update recs & recently rated once movies are loaded
   useEffect(() => {
     const fetchRecs = async () => {
       const storedUserId = localStorage.getItem('userId');
@@ -66,10 +68,16 @@ const Home: React.FC = () => {
     }
   }, [movies]);
 
-  // Restore original behavior of updating recently rated from localStorage
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % FEATURED_IDS.length);
+    }, 12000); // Slower transition: 12 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const updateRecentlyRated = () => {
     const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
-    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse(); // Most recent first
+    const ratedMovieIds = Object.keys(storedRatings).slice(-6).reverse();
     const recent = ratedMovieIds
       .map((id) => movies.find((m) => m.show_id === id))
       .filter((m): m is Movie => Boolean(m));
@@ -77,13 +85,25 @@ const Home: React.FC = () => {
   };
 
   const handleMovieClick = (movie: Movie) => setSelectedMovie(movie);
-
   const handleCloseMovieCard = () => {
     setSelectedMovie(null);
-    updateRecentlyRated(); // Refresh Recently Rated after closing/rating
+    updateRecentlyRated();
   };
 
-  // Filters
+  const handleFeatureNav = (direction: 'prev' | 'next') => {
+    setFeaturedIndex((prev) => {
+      const total = FEATURED_IDS.length;
+      if (direction === 'prev') {
+        return (prev - 1 + total) % total; // wrap to last if at first
+      } else {
+        return (prev + 1) % total; // wrap to first if at last
+      }
+    });
+  };
+
+  const featuredMovies = movies.filter((m) => FEATURED_IDS.includes(m.show_id));
+  const featuredMovie = featuredMovies[featuredIndex];
+
   const trendingMovies = () => {
     const avgMap: Record<string, { total: number; count: number }> = {};
     ratings.forEach((r) => {
@@ -103,22 +123,21 @@ const Home: React.FC = () => {
   const newReleases = movies.filter((m) => m.release_year >= 2020);
   const tvShows = movies.filter((m) => m.type?.toLowerCase() === 'tv show').slice(0, 25);
   const familyMovies = movies.filter((m) => ['G', 'PG'].includes(m.rating?.toUpperCase() || ''));
-  const bingeWorthy = movies.filter(
-    (m) =>
-      m.type?.toLowerCase() === 'tv show' &&
-      /\d+\s*seasons?/i.test(m.duration) &&
-      parseInt(m.duration.match(/\d+/)?.[0] || '0') >= 5
+  const bingeWorthy = movies.filter((m) =>
+    m.type?.toLowerCase() === 'tv show' && /\d+\s*seasons?/i.test(m.duration) &&
+    parseInt(m.duration.match(/\d+/)?.[0] || '0') >= 5
   );
 
-  if (loading)
+  if (loading) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
         <p>Loading amazing movies...</p>
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="error-container">
         <h2>Oops!</h2>
@@ -126,32 +145,28 @@ const Home: React.FC = () => {
         <button onClick={() => window.location.reload()}>Try Again</button>
       </div>
     );
-
-  const featuredMovie =
-    movies.length > 0 ? movies[Math.floor(Math.random() * movies.length)] : null;
+  }
 
   return (
     <div className="home-page">
       <NavBar />
 
       {featuredMovie && (
-        <FeaturedContent movie={featuredMovie} onMoreInfoClick={handleMovieClick} />
+        <FeaturedContent
+          movie={featuredMovie}
+          onMoreInfoClick={handleMovieClick}
+          onPrev={() => handleFeatureNav('prev')}
+          onNext={() => handleFeatureNav('next')}
+        />
       )}
 
       <Container fluid className="content-container">
         {recommendedMovies.length > 0 && (
           <ContentRow title="Recommended for You" movies={recommendedMovies} onMovieClick={handleMovieClick} />
         )}
-
         {recentlyRated.length > 0 && (
-          <ContentRow
-            title="Recently Rated"
-            movies={recentlyRated}
-            onMovieClick={handleMovieClick}
-            disableShuffle // 🚫 don't shuffle this row
-          />
+          <ContentRow title="Recently Rated" movies={recentlyRated} onMovieClick={handleMovieClick} disableShuffle />
         )}
-
         <ContentRow title="Trending Now" movies={trendingMovies()} onMovieClick={handleMovieClick} />
         <ContentRow title="TV Shows" movies={tvShows} onMovieClick={handleMovieClick} />
         <ContentRow title="New Releases" movies={newReleases} onMovieClick={handleMovieClick} />
@@ -161,7 +176,6 @@ const Home: React.FC = () => {
       </Container>
 
       {selectedMovie && <MovieCard movie={selectedMovie} onClose={handleCloseMovieCard} />}
-
       <Footer />
     </div>
   );
