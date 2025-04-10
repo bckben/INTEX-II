@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchAllMovies, deleteMovie, Movie } from '../api/movieApi';
 import MovieForm from '../components/MovieForm';
 import Dashboard from '../components/Dashboard';
@@ -14,6 +15,8 @@ const Admin: React.FC = () => {
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
   const [, setTotalMovies] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'movies' | 'dashboard'>('movies');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadMovies();
@@ -53,6 +56,12 @@ const Admin: React.FC = () => {
     <div className="admin-page">
       <div className="admin-container">
         <h1>Admin Panel</h1>
+
+        <div className="admin-controls-top">
+          <button className="btn-back" onClick={() => navigate('/movies')}>
+            ← Back to All Movies
+          </button>
+        </div>
 
         <div className="admin-tabs">
           <button
@@ -160,8 +169,12 @@ const Admin: React.FC = () => {
                     onSubmitSuccess={() => {
                       loadMovies();
                       setShowAddForm(false);
+                      setEditingMovie(null);
                     }}
-                    onCancel={() => setShowAddForm(false)}
+                    onCancel={() => {
+                      setShowAddForm(false);
+                      setEditingMovie(null);
+                    }}
                   />
                 </div>
               </div>
