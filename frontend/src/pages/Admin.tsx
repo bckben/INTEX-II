@@ -12,7 +12,7 @@ const Admin: React.FC = () => {
   const [moviesPerPage, setMoviesPerPage] = useState<number>(10);
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
-  const [totalMovies, setTotalMovies] = useState<number>(0);
+  const [, setTotalMovies] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'movies' | 'dashboard'>('movies');
 
   useEffect(() => {
