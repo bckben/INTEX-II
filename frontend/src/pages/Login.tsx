@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,29 +16,42 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
-    // Simulating API call
+
     try {
-      // Add your actual login logic here
-      console.log('Login attempt with:', { email, password, rememberMe });
-      
-      // For demonstration, just redirect after a delay
-      setTimeout(() => {
-        setLoading(false);
-        navigate('/home');
-      }, 1000);
-    } catch (err) {
-      setLoading(false);
+      const response = await axios.post(
+        'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/Login',
+        {
+          email,
+          password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const { token, userId } = response.data;
+
+      // Store in localStorage
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('userId', userId);
+
+      console.log('✅ Login successful:', { token, userId });
+
+      navigate('/home');
+    } catch (err: any) {
       setError('Invalid email or password. Please try again.');
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-page">
-      {/* Add background overlay */}
       <div className="login-overlay"></div>
-      
+
       <header className="login-header">
         <Link to="/">
           <img
@@ -51,13 +65,13 @@ const Login: React.FC = () => {
       <div className="login-form-wrapper">
         <div className="login-form-inner">
           <h1 className="login-title">Sign In</h1>
-          
+
           {error && (
             <div className="alert alert-danger" role="alert">
               {error}
             </div>
           )}
-          
+
           <Form onSubmit={handleLogin}>
             <Form.Group className="mb-3">
               <Form.Control
@@ -117,7 +131,8 @@ const Login: React.FC = () => {
           </Button>
 
           <div className="account-redirect">
-            New to CineNiche? <Link to="/create" className="signup-redirect-link">Sign up now</Link>
+            New to CineNiche?{' '}
+            <Link to="/create" className="signup-redirect-link">Sign up now</Link>
           </div>
         </div>
       </div>

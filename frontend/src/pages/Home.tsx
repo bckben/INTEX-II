@@ -7,7 +7,6 @@ import ContentRow from '../components/ContentRow';
 import Footer from '../components/Footer';
 import MovieCard from '../components/MovieCard';
 import { fetchAllMovies, Movie, MovieRating } from '../api/movieApi';
-import { getUserRecommendations } from '../api/recommendationApi';
 import axios from 'axios';
 
 const FEATURED_IDS = [
@@ -49,16 +48,33 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchRecs = async () => {
       const storedUserId = localStorage.getItem('userId');
-      if (!storedUserId || movies.length === 0) return;
+      const token = localStorage.getItem('authToken');
+      console.log("🧠 storedUserId:", storedUserId);
+      console.log("🔐 authToken:", token);
+
+      if (!storedUserId || !token || movies.length === 0) {
+        console.log("⛔️ Skipping fetchRecs due to missing user/token or no movies");
+        return;
+      }
 
       try {
-        const recIds = await getUserRecommendations(parseInt(storedUserId));
+        console.log("📡 Sending request to recommendations endpoint...");
+        const response = await axios.get<string[]>(
+          `https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/recommendations/user/${storedUserId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("✅ Got recommendation response:", response);
+        const recIds = response.data;
         const matched = recIds
           .map((id) => movies.find((m) => m.show_id === id))
           .filter((m): m is Movie => Boolean(m));
         setRecommendedMovies(matched);
       } catch (err) {
-        console.error('Error fetching user recommendations:', err);
+        console.error("❌ Error fetching user recommendations:", err);
       }
 
       updateRecentlyRated();
@@ -72,7 +88,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setFeaturedIndex((prev) => (prev + 1) % FEATURED_IDS.length);
-    }, 12000); // Slower transition: 12 seconds
+    }, 12000);
     return () => clearInterval(interval);
   }, []);
 
@@ -94,11 +110,9 @@ const Home: React.FC = () => {
   const handleFeatureNav = (direction: 'prev' | 'next') => {
     setFeaturedIndex((prev) => {
       const total = FEATURED_IDS.length;
-      if (direction === 'prev') {
-        return (prev - 1 + total) % total; // wrap to last if at first
-      } else {
-        return (prev + 1) % total; // wrap to first if at last
-      }
+      return direction === 'prev'
+        ? (prev - 1 + total) % total
+        : (prev + 1) % total;
     });
   };
 
@@ -125,7 +139,8 @@ const Home: React.FC = () => {
   const tvShows = movies.filter((m) => m.type?.toLowerCase() === 'tv show').slice(0, 25);
   const familyMovies = movies.filter((m) => ['G', 'PG'].includes(m.rating?.toUpperCase() || ''));
   const bingeWorthy = movies.filter((m) =>
-    m.type?.toLowerCase() === 'tv show' && /\d+\s*seasons?/i.test(m.duration) &&
+    m.type?.toLowerCase() === 'tv show' &&
+    /\d+\s*seasons?/i.test(m.duration) &&
     parseInt(m.duration.match(/\d+/)?.[0] || '0') >= 5
   );
 
