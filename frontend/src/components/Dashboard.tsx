@@ -15,7 +15,7 @@ const reportDescriptions: Record<string, string> = {
     report11: "Genres most popular among users under 25.",
     report12: "Genres most popular among users over 50.",
     report13: "Genre preferences split by gender.",
-    report14: "Top genres watched by platform (split into three parts: Netflix, Disney+, Prime)"
+    report14: "Top genres watched by platform"
 };
 
 const reportOptions = [
