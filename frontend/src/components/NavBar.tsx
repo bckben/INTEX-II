@@ -60,7 +60,6 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
     }
   }, [searchQuery, allMovies]);
 
-  // Close dropdown if user clicks outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -110,9 +109,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/home">Home</Nav.Link>
             <Nav.Link as={Link} to="/movies">All Movies</Nav.Link>
-            <Nav.Link as={Link} to="/admin">Retro Flashback</Nav.Link>
-            <Nav.Link as={Link} to="/gallery">Gallery</Nav.Link>
-            <Nav.Link as={Link} to="/blog">Blog</Nav.Link>
+            <Nav.Link as={Link} to="/admin">Admin Portal</Nav.Link>
           </Nav>
 
           <div className="search-container position-relative me-3">
