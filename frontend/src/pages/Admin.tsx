@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  fetchAllMovies, 
-  deleteMovie, 
-  Movie 
-} from '../api/movieApi';
+import { fetchAllMovies, deleteMovie, Movie } from '../api/movieApi';
 import MovieForm from '../components/MovieForm';
+import Dashboard from '../components/Dashboard';
 import './Admin.css';
 
 const Admin: React.FC = () => {
@@ -16,6 +13,7 @@ const Admin: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
   const [totalMovies, setTotalMovies] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<'movies' | 'dashboard'>('movies');
 
   useEffect(() => {
     loadMovies();
@@ -38,7 +36,7 @@ const Admin: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       const success = await deleteMovie(movieId);
       if (success) {
-        setMovies(prevMovies => prevMovies.filter(movie => movie.show_id !== movieId));
+        setMovies(prev => prev.filter(movie => movie.show_id !== movieId));
         setTotalMovies(prev => prev - 1);
       } else {
         setError('Failed to delete movie');
@@ -46,150 +44,132 @@ const Admin: React.FC = () => {
     }
   };
 
-  const handleEdit = (movie: Movie) => {
-    setEditingMovie(movie);
-    setShowAddForm(false);
-  };
-
-  const handleAddNew = () => {
-    setEditingMovie(null);
-    setShowAddForm(true);
-  };
-
-  const handleFormClose = () => {
-    setEditingMovie(null);
-    setShowAddForm(false);
-  };
-
-  const handleFormSubmit = () => {
-    loadMovies();
-    setEditingMovie(null);
-    setShowAddForm(false);
-  };
-
-  const handleMoviesPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setMoviesPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page when changing items per page
-  };
-
-  // Pagination calculation
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
   const totalPages = Math.ceil(movies.length / moviesPerPage);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   return (
     <div className="admin-page">
       <div className="admin-container">
-        <h1>Movie Admin Dashboard</h1>
+        <h1>Admin Panel</h1>
 
-        <div className="admin-controls">
-          <button className="btn-add" onClick={handleAddNew}>Add New Movie</button>
-
-          <div className="pagination-controls">
-            <span>Movies per page: </span>
-            <select 
-              value={moviesPerPage} 
-              onChange={handleMoviesPerPageChange}
-              className="select-movies-per-page"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-          </div>
+        <div className="admin-tabs">
+          <button
+            className={`tab-button ${activeTab === 'movies' ? 'active' : ''}`}
+            onClick={() => setActiveTab('movies')}
+          >
+            Movie Database
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            Dashboard Reports
+          </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-
-        {loading ? (
-          <div className="loading">Loading movies...</div>
-        ) : (
+        {activeTab === 'movies' && (
           <>
-            <div className="movie-table-container">
-              <table className="movie-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Year</th>
-                    <th>Director</th>
-                    <th>Rating</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentMovies.map(movie => (
-                    <tr key={movie.show_id}>
-                      <td>{movie.show_id}</td>
-                      <td>{movie.title}</td>
-                      <td>{movie.type}</td>
-                      <td>{movie.release_year}</td>
-                      <td>{movie.director || 'N/A'}</td>
-                      <td>{movie.rating}</td>
-                      <td className="action-buttons">
-                        <button 
-                          className="btn-edit"
-                          onClick={() => handleEdit(movie)}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          className="btn-delete"
-                          onClick={() => handleDelete(movie.show_id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
+            <div className="admin-controls">
+              <button className="btn-add" onClick={() => setShowAddForm(true)}>Add New Movie</button>
+              <div className="pagination-controls">
+                <span>Movies per page: </span>
+                <select
+                  value={moviesPerPage}
+                  onChange={(e) => {
+                    setMoviesPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="select-movies-per-page"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                </select>
+              </div>
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            {loading ? (
+              <div className="loading">Loading movies...</div>
+            ) : (
+              <>
+                <table className="movie-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Year</th>
+                      <th>Director</th>
+                      <th>Rating</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {currentMovies.map(movie => (
+                      <tr key={movie.show_id}>
+                        <td>{movie.show_id}</td>
+                        <td>{movie.title}</td>
+                        <td>{movie.type}</td>
+                        <td>{movie.release_year}</td>
+                        <td>{movie.director}</td>
+                        <td>{movie.rating}</td>
+                        <td className="action-buttons">
+                          <button className="btn-edit" onClick={() => setEditingMovie(movie)}>Edit</button>
+                          <button className="btn-delete" onClick={() => handleDelete(movie.show_id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-            <div className="pagination">
-              <button 
-                onClick={() => paginate(currentPage - 1)} 
-                disabled={currentPage === 1}
-                className="page-button"
-              >
-                &laquo; Prev
-              </button>
+                <div className="pagination">
+                  <button
+                    className="page-button"
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    &laquo; Prev
+                  </button>
+                  <span className="page-info">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    className="page-button"
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next &raquo;
+                  </button>
+                </div>
+              </>
+            )}
 
-              <span className="page-info">
-                Page {currentPage} of {totalPages} (Showing {indexOfFirstMovie + 1}-{Math.min(indexOfLastMovie, totalMovies)} of {totalMovies})
-              </span>
-
-              <button 
-                onClick={() => paginate(currentPage + 1)} 
-                disabled={currentPage === totalPages}
-                className="page-button"
-              >
-                Next &raquo;
-              </button>
-            </div>
+            {(showAddForm || editingMovie) && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h2>{editingMovie ? 'Edit Movie' : 'Add New Movie'}</h2>
+                    <button className="close-button" onClick={() => setShowAddForm(false)}>&times;</button>
+                  </div>
+                  <MovieForm
+                    movie={editingMovie}
+                    onSubmitSuccess={() => {
+                      loadMovies();
+                      setShowAddForm(false);
+                    }}
+                    onCancel={() => setShowAddForm(false)}
+                  />
+                </div>
+              </div>
+            )}
           </>
         )}
 
-        {(showAddForm || editingMovie) && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2>{editingMovie ? 'Edit Movie' : 'Add New Movie'}</h2>
-                <button className="close-button" onClick={handleFormClose}>&times;</button>
-              </div>
-              <MovieForm 
-                movie={editingMovie}
-                onSubmitSuccess={handleFormSubmit}
-                onCancel={handleFormClose}
-              />
-            </div>
-          </div>
-        )}
+        {activeTab === 'dashboard' && <Dashboard />}
       </div>
     </div>
   );

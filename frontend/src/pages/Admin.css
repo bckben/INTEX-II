@@ -1,12 +1,14 @@
+/* === GLOBAL ROOTS === */
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
   background-color: #000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Outer wrapper for centering the entire admin card */
+/* === PAGE WRAPPER === */
 .admin-page {
   display: flex;
   justify-content: center;
@@ -16,47 +18,49 @@ html, body, #root {
   background-color: #000;
 }
 
-/* Card container */
+/* === ADMIN CARD === */
 .admin-container {
   width: 100%;
   max-width: 1200px;
   background-color: #f5f5f5;
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Title */
+/* === HEADER === */
 h1 {
   color: #e50914;
   margin-bottom: 20px;
+  font-size: 2rem;
 }
 
-/* Add button, pagination controls */
+/* === TOP CONTROLS === */
 .admin-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* ADD BUTTON */
 .btn-add {
   background-color: #e50914;
-  color: white;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
-  cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.2s;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .btn-add:hover {
   background-color: #f40612;
 }
 
-/* DROPDOWN FOR PER-PAGE */
+/* === PER-PAGE SELECT === */
 .pagination-controls {
   display: flex;
   align-items: center;
@@ -68,14 +72,16 @@ h1 {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
 }
 
-/* MOVIE TABLE STYLING */
+/* === TABLE STYLES === */
 .movie-table-container {
   overflow-x: auto;
   background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .movie-table {
@@ -83,7 +89,7 @@ h1 {
   border-collapse: collapse;
 }
 
-.movie-table th, 
+.movie-table th,
 .movie-table td {
   padding: 12px 15px;
   text-align: left;
@@ -98,57 +104,58 @@ h1 {
 }
 
 .movie-table tr:hover {
-  background-color: #f8f9fa;
+  background-color: #f1f1f1;
 }
 
-/* ACTION BUTTONS */
+/* === ACTION BUTTONS === */
 .action-buttons {
   display: flex;
   gap: 10px;
 }
 
-.btn-edit {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
+.btn-edit, .btn-delete {
+  padding: 6px 12px;
   border-radius: 4px;
+  font-size: 0.9rem;
+  border: none;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: white;
 }
 
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+.btn-edit {
+  background-color: #007bff;
 }
 
 .btn-edit:hover {
   background-color: #0069d9;
 }
 
+.btn-delete {
+  background-color: #dc3545;
+}
+
 .btn-delete:hover {
   background-color: #c82333;
 }
 
-/* PAGINATION */
+/* === PAGINATION === */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  gap: 15px;
+  margin-top: 25px;
+  gap: 20px;
 }
 
 .page-button {
   background-color: #343a40;
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.95rem;
 }
 
 .page-button:disabled {
@@ -157,33 +164,32 @@ h1 {
 }
 
 .page-info {
+  font-size: 0.95rem;
   color: #000;
 }
 
-/* ERROR + LOADING */
+/* === STATUS / ERROR === */
 .error-message {
   background-color: #f8d7da;
   color: #721c24;
-  padding: 10px;
+  padding: 12px;
   border-radius: 4px;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 .loading {
   text-align: center;
   padding: 50px 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #6c757d;
 }
 
-/* MODAL STYLING */
+/* === MODAL === */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -191,13 +197,13 @@ h1 {
 }
 
 .modal-content {
-  background-color: white;
-  border-radius: 8px;
+  background-color: #fff;
+  border-radius: 10px;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
@@ -211,6 +217,7 @@ h1 {
 .modal-header h2 {
   margin: 0;
   color: #343a40;
+  font-size: 1.3rem;
 }
 
 .close-button {
@@ -219,8 +226,26 @@ h1 {
   font-size: 1.5rem;
   cursor: pointer;
   color: #6c757d;
+  transition: color 0.2s;
 }
 
 .close-button:hover {
   color: #343a40;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  color: #000 !important;
+  background-color: #fff;
+}
+
+.select-movies-per-page {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #000;
+  /* dark background */
+  color: #fff;
+  /* white text */
 }
