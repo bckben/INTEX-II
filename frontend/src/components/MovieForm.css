@@ -17,7 +17,7 @@
 
 .form-row {
   display: flex;
-  gap:.20px;
+  gap: 0.2px;
   margin-bottom: 0;
 }
 
@@ -36,6 +36,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f8f9fa;
+  color: #000;
 }
 
 .form-group textarea {
@@ -171,7 +172,7 @@
     flex-direction: column;
     gap: 0;
   }
-  
+
   .genre-options {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
