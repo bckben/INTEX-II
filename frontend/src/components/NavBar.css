@@ -144,3 +144,10 @@
 .search-dropdown .dropdown-item:hover {
   background-color: #222;
 }
+
+/* Remove the default "x" clear button in WebKit browsers */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
