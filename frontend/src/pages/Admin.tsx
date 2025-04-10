@@ -200,7 +200,10 @@ const Admin: React.FC = () => {
                     <h2>{editingMovie ? "Edit Movie" : "Add New Movie"}</h2>
                     <button
                       className="close-button"
-                      onClick={() => setShowAddForm(false)}
+                      onClick={() => {
+                        setShowAddForm(false);
+                        setEditingMovie(null); // ✅ this closes the modal if you're editing
+                      }}
                     >
                       &times;
                     </button>
