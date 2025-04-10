@@ -61,7 +61,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClose }) => {
         value === 1 &&
         !['show_id', 'title', 'type', 'director', 'cast', 'country', 'release_year', 'rating', 'duration', 'description'].includes(key)
       ) {
-        genres.push(key.replace(/_/g, ' '));
+        const readable = key
+          .replace(/_/g, ' ')
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        genres.push(readable);
       }
     });
     return genres;

@@ -1,73 +1,84 @@
 .site-footer {
-    background-color: #111;
-    color: #8c8c8c;
-    padding: 50px 0 30px;
-    margin-top: 50px;
+  background-color: #111;
+  color: #ccc;
+  padding: 60px 0 40px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-section {
+  margin-bottom: 30px;
+}
+
+.footer-heading {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.footer-text {
+  font-size: 1rem;
+  color: #bbb;
+  line-height: 1.6;
+}
+
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.footer-contact li {
+  margin-bottom: 8px;
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.social-icon {
+  color: #fff;
+  font-size: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.social-icon:hover {
+  color: #e50914;
+}
+
+hr {
+  border-color: #333;
+  margin: 30px 0;
+}
+
+.copyright-text {
+  font-size: 0.95rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.copyright-text a {
+  color: #e50914;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    text-align: center;
+    padding: 40px 0 30px;
   }
-  
-  .site-footer h5 {
-    color: #fff;
-    font-size: 1.1rem;
+
+  .footer-heading {
+    margin-top: 20px;
+  }
+
+  .social-links {
+    justify-content: center;
     margin-bottom: 20px;
   }
-  
-  .footer-links {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .footer-links li {
-    margin-bottom: 10px;
-  }
-  
-  .footer-links a {
-    color: #8c8c8c;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-  
-  .footer-links a:hover {
-    color: #e50914;
-  }
-  
-  .social-links {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .social-icon {
-    color: #fff;
-    font-size: 1.5rem;
-    transition: color 0.2s ease;
-  }
-  
-  .social-icon:hover {
-    color: #e50914;
-  }
-  
-  .copyright-text {
-    margin-top: 20px;
-    font-size: 0.9rem;
-  }
-  
-  hr {
-    border-color: #333;
-    margin: 30px 0;
-  }
-  
-  /* For mobile devices */
-  @media (max-width: 768px) {
-    .site-footer {
-      padding: 30px 0 20px;
-      text-align: center;
-    }
-    
-    .site-footer h5 {
-      margin-top: 20px;
-    }
-    
-    .social-links {
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-  }
+}

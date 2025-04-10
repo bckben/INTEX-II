@@ -1,4 +1,3 @@
-// FeaturedContent.tsx
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Movie } from '../api/movieApi';
@@ -7,9 +6,11 @@ import './FeaturedContent.css';
 interface FeaturedContentProps {
   movie: Movie;
   onMoreInfoClick: (movie: Movie) => void;
+  onPrev: () => void;
+  onNext: () => void;
 }
 
-const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClick }) => {
+const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClick, onPrev, onNext }) => {
   const fallbackPoster = '/assets/movie_tape.jpg';
 
   const getPosterUrl = (title: string) =>
@@ -19,7 +20,13 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClic
     <div className="featured-wrapper">
       <Container fluid className="featured-container">
         <Row className="align-items-center gx-5">
-          <Col md={7} className="featured-text">
+          <Col md={1} className="arrow-col">
+            <button className="carousel-arrow left" onClick={onPrev}>
+              ‹
+            </button>
+          </Col>
+
+          <Col md={6} className="featured-text">
             <h1 className="featured-title">{movie.title}</h1>
             <div className="featured-meta">
               {movie.release_year && <span className="year">{movie.release_year}</span>}
@@ -42,7 +49,7 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClic
             </div>
           </Col>
 
-          <Col md={5} className="featured-poster">
+          <Col md={4} className="featured-poster">
             <div className="poster-frame">
               <img
                 src={getPosterUrl(movie.title)}
@@ -50,6 +57,12 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({ movie, onMoreInfoClic
                 onError={(e) => (e.currentTarget.src = fallbackPoster)}
               />
             </div>
+          </Col>
+
+          <Col md={1} className="arrow-col">
+            <button className="carousel-arrow right" onClick={onNext}>
+              ›
+            </button>
           </Col>
         </Row>
       </Container>

@@ -1,24 +1,27 @@
-import React from 'react';
-import './GenreSelector.css';
+import React from "react";
+import "./GenreSelector.css";
 
 interface GenreSelectorProps {
   selectedGenre: string;
   onGenreChange: (genre: string) => void;
 }
 
-const GenreSelector: React.FC<GenreSelectorProps> = ({ selectedGenre, onGenreChange }) => {
+const GenreSelector: React.FC<GenreSelectorProps> = ({
+  selectedGenre,
+  onGenreChange,
+}) => {
   // List of genres - you can expand this based on your actual data
   const genres = [
-    'All',
-    'Action & Adventure',
-    'Comedy',
-    'Drama',
-    'Horror',
-    'Sci-Fi',
-    'Thriller',
-    'Documentary',
-    'Anime',
-    'International'
+    "All",
+    "Action & Adventure",
+    "Comedy",
+    "Drama",
+    "Horror",
+    "Fantasy",
+    "Thriller",
+    "Documentary",
+    "Anime",
+    "International",
   ];
 
   return (
@@ -27,7 +30,7 @@ const GenreSelector: React.FC<GenreSelectorProps> = ({ selectedGenre, onGenreCha
         {genres.map((genre) => (
           <button
             key={genre}
-            className={`genre-button ${selectedGenre === genre ? 'active' : ''}`}
+            className={`genre-button ${selectedGenre === genre ? "active" : ""}`}
             onClick={() => onGenreChange(genre)}
           >
             {genre}
