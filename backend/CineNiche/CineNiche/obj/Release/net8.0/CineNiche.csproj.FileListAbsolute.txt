@@ -135,5 +135,5 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/CineNiche.pdb
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/CineNiche.genruntimeconfig.cache
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/ref/CineNiche.dll
-/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Data/Movies.db
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/runtimes/linux-musl-s390x/native/libe_sqlite3.so
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Data/Movies.db

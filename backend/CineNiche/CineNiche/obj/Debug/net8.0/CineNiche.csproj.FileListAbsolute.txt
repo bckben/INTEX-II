@@ -141,5 +141,4 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.deps.json
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.runtimeconfig.json
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/publish/CineNiche.staticwebassets.endpoints.json
-/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/Data/Movies.db
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/runtimes/linux-musl-s390x/native/libe_sqlite3.so
