@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineNiche.Migrations.MoviesDb
 {
     [DbContext(typeof(MoviesDbContext))]
-    [Migration("20250410044651_InitialMoviesMigration")]
+    [Migration("20250410054356_InitialMoviesMigration")]
     partial class InitialMoviesMigration
     {
         /// <inheritdoc />

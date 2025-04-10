@@ -91,7 +91,6 @@ using (var scope = app.Services.CreateScope())
     }
     else
     {
-        // Ensure admin role assigned
         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
@@ -103,8 +102,18 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseSwagger();
 app.UseSwaggerUI();
+
 app.UseCors("AllowFrontend");
-app.UseAuthentication(); // 🔥 MUST come before Authorization
+
+// === CSP HEADER ===
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy",
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+    await next();
+});
+
+app.UseAuthentication(); // MUST be before UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();

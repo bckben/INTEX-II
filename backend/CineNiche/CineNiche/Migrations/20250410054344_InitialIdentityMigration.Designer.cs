@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineNiche.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250410044620_InitialIdentityMigration")]
+    [Migration("20250410054344_InitialIdentityMigration")]
     partial class InitialIdentityMigration
     {
         /// <inheritdoc />
