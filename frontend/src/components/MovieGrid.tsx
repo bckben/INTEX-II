@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+// add useEffect later if needed
+import React, {useRef, useState, useCallback } from 'react'; 
 import './MovieGrid.css';
 import { Movie } from '../api/movieApi';
 
