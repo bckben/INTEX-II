@@ -76,6 +76,9 @@ const CreateAccount: React.FC = () => {
 
   return (
     <div className="create-account-page">
+      {/* Add background overlay */}
+      <div className="create-account-overlay"></div>
+      
       <div className="create-account-header">
         <Link to="/" className="brand-link d-flex align-items-center">
           <img

@@ -1,0 +1,117 @@
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(20, 20, 20, 0.95);
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    border-top: 1px solid #333;
+  }
+  
+  .cookie-banner.show {
+    transform: translateY(0);
+  }
+  
+  .cookie-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .cookie-text {
+    font-size: 14px;
+    margin-right: 20px;
+  }
+  
+  .cookie-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .cookie-accept {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .cookie-accept:hover {
+    background-color: #f40612;
+  }
+  
+  .cookie-more {
+    color: #e50914;
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .cookie-more:hover {
+    text-decoration: underline;
+  }
+  
+  .cookie-close {
+    color: #aaa;
+    background: none;
+    border: none;
+    margin-left: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cookie-close:hover {
+    color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .cookie-banner {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+    }
+    
+    .cookie-content {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .cookie-text {
+      margin-right: 0;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .cookie-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .cookie-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      margin-left: 0;
+    }
+  }

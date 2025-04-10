@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Landing.css';
+import CookieBanner from '../components/CookieBanner';
 
 const Landing: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -63,6 +64,9 @@ const Landing: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Cookie Consent Banner */}
+      <CookieBanner />
     </div>
   );
 };
