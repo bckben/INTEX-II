@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CineNiche")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a5d42b5ac424f1abcbf3b29a70461559815c8b9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d8d9311ab43f513cf927e99720c36f76bac167a")]
 [assembly: System.Reflection.AssemblyProductAttribute("CineNiche")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CineNiche")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
