@@ -14,6 +14,7 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('authEmail'));
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
@@ -29,6 +30,30 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Check user role on component mount and when authRoles changes
+  useEffect(() => {
+    const checkUserRole = () => {
+      const authRolesStr = localStorage.getItem('authRoles');
+      if (authRolesStr) {
+        try {
+          const authRoles = JSON.parse(authRolesStr);
+          // Check if user has admin role (adjust this based on your role names)
+          setIsAdmin(authRoles.includes('Admin'));
+        } catch (error) {
+          console.error('Error parsing authRoles:', error);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    checkUserRole();
+    // Listen for storage events to update role state if localStorage changes
+    window.addEventListener('storage', checkUserRole);
+    return () => window.removeEventListener('storage', checkUserRole);
   }, []);
 
   useEffect(() => {
@@ -98,6 +123,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
     } finally {
       localStorage.clear();
       setIsLoggedIn(false);
+      setIsAdmin(false);
       navigate('/login');
       window.location.reload(); // ✅ Ensure no cached session
     }
@@ -114,7 +140,9 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/home">Home</Nav.Link>
             <Nav.Link as={Link} to="/movies">All Movies</Nav.Link>
-            <Nav.Link as={Link} to="/admin">Admin Portal</Nav.Link>
+            {isAdmin && (
+              <Nav.Link as={Link} to="/admin">Admin Portal</Nav.Link>
+            )}
           </Nav>
           <div className="search-container position-relative me-3">
             <Form className="d-flex">
