@@ -6,7 +6,10 @@ axios.defaults.withCredentials = true;
 const BASE_URL =
   "https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net";
 
-// Types from your C# models
+// =====================
+// Interfaces
+// =====================
+
 export interface Movie {
   show_id: string;
   type: string;
@@ -78,7 +81,16 @@ export interface MovieUser {
   zip: number;
 }
 
-// Fetch all movies
+export interface GenreRecommendation {
+  user_id: number;
+  genre: string;
+  recommendations: string[]; // This will be parsed from JSON string
+}
+
+// =====================
+// Movie CRUD
+// =====================
+
 export const fetchAllMovies = async (): Promise<Movie[]> => {
   try {
     const response = await axios.get(`${BASE_URL}/movies`);
@@ -89,7 +101,6 @@ export const fetchAllMovies = async (): Promise<Movie[]> => {
   }
 };
 
-// Fetch a single movie by ID
 export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
   try {
     const response = await axios.get(`${BASE_URL}/movies/${showId}`);
@@ -100,11 +111,10 @@ export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
   }
 };
 
-// Delete a movie by ID
 export const deleteMovie = async (showId: string): Promise<boolean> => {
   try {
     await axios.delete(`${BASE_URL}/movies/${showId}`, {
-      withCredentials: true // ✅ REQUIRED FOR AUTH TO WORK IN AZURE
+      withCredentials: true
     });
     return true;
   } catch (error) {
@@ -113,11 +123,10 @@ export const deleteMovie = async (showId: string): Promise<boolean> => {
   }
 };
 
-// Update a movie
 export const updateMovie = async (movie: Movie): Promise<boolean> => {
   try {
     await axios.put(`${BASE_URL}/movies/${movie.show_id}`, movie, {
-      withCredentials: true, // ✅ this sends the auth cookie
+      withCredentials: true
     });
     return true;
   } catch (error) {
@@ -126,7 +135,6 @@ export const updateMovie = async (movie: Movie): Promise<boolean> => {
   }
 };
 
-// Add a new movie
 export const addMovie = async (movie: Movie): Promise<Movie | null> => {
   try {
     const response = await axios.post(`${BASE_URL}/movies`, movie);
@@ -137,7 +145,10 @@ export const addMovie = async (movie: Movie): Promise<Movie | null> => {
   }
 };
 
-// Fetch recommendations for a movie by title
+// =====================
+// Recommendations
+// =====================
+
 export const fetchRecommendations = async (
   title: string
 ): Promise<string[]> => {
@@ -148,6 +159,34 @@ export const fetchRecommendations = async (
     return response.data;
   } catch (error) {
     console.error("Error fetching recommendations:", error);
+    return [];
+  }
+};
+
+export const fetchUserRecommendations = async (
+  userId: number
+): Promise<string[]> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/Recommendations/User/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user recommendations for ID ${userId}:`, error);
+    return [];
+  }
+};
+
+export const fetchGenreRecommendations = async (
+  userId: number
+): Promise<GenreRecommendation[]> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/Recommendations/Genre/${userId}`);
+    const parsed = response.data.map((rec: any) => ({
+      ...rec,
+      recommendations: JSON.parse(rec.recommendations)
+    }));
+    return parsed;
+  } catch (error) {
+    console.error(`Error fetching genre recommendations for user ${userId}:`, error);
     return [];
   }
 };

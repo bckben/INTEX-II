@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using CineNiche.Models;
 
 namespace CineNiche.Models
 {
@@ -13,10 +12,9 @@ namespace CineNiche.Models
         }
 
         public virtual DbSet<movies_rating> movies_ratings { get; set; }
-
         public virtual DbSet<movies_title> movies_titles { get; set; }
-
         public virtual DbSet<movies_user> movies_users { get; set; }
+        public virtual DbSet<user_genre_recommendation> user_genre_recommendations { get; set; } // ✅ NEW
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +25,7 @@ namespace CineNiche.Models
 
             modelBuilder.Entity<movies_title>(entity =>
             {
-                entity.HasKey(e => e.show_id); // ✅ Primary key defined
+                entity.HasKey(e => e.show_id);
 
                 entity.Property(e => e.Anime_Series_International_TV_Shows)
                       .HasColumnName("Anime Series International TV Shows");
@@ -101,6 +99,15 @@ namespace CineNiche.Models
                 entity.Property(e => e.Apple_TV_).HasColumnName("Apple TV+");
                 entity.Property(e => e.Disney_).HasColumnName("Disney+");
                 entity.Property(e => e.Paramount_).HasColumnName("Paramount+");
+            });
+
+            // ✅ Genre-based recommender table (primary key: user_id + genre)
+            modelBuilder.Entity<user_genre_recommendation>(entity =>
+            {
+                entity.HasKey(e => new { e.user_id, e.genre });
+
+                entity.Property(e => e.recommendations)
+                      .HasColumnType("TEXT"); // Make sure this matches your DB column type
             });
 
             OnModelCreatingPartial(modelBuilder);
