@@ -187,7 +187,15 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-page">
-      <NavBar />
+      <NavBar
+        onMovieClick={(id) => {
+          const movie = movies.find(m => m.show_id === id);
+          if (movie) {
+            setSelectedMovie(movie);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+      />
 
       {featuredMovie && (
         <FeaturedContent

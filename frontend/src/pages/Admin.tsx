@@ -49,7 +49,7 @@ const Admin: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   const indexOfLastMovie = currentPage * moviesPerPage;
