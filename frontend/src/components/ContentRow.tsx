@@ -7,9 +7,20 @@ interface ContentRowProps {
   movies: Movie[];
   onMovieClick?: (movie: Movie) => void;
   disableShuffle?: boolean;
+  includeExplorePanel?: boolean;
+  onExploreClick?: () => void;
+  customExploreLabel?: string;
 }
 
-const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick, disableShuffle = false }) => {
+const ContentRow: React.FC<ContentRowProps> = ({
+  title,
+  movies,
+  onMovieClick,
+  disableShuffle = false,
+  includeExplorePanel = false,
+  onExploreClick,
+  customExploreLabel = 'Explore More Curated Picks',
+}) => {
   const [displayMovies, setDisplayMovies] = useState<Movie[]>([]);
   const [visibleCount, setVisibleCount] = useState(50);
 
@@ -22,7 +33,6 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick, di
     const isUserSpecificRow = title.toLowerCase().includes('recommended') || disableShuffle;
 
     if (isUserSpecificRow) {
-      // Always show fresh data for personalized or unshuffled rows
       setDisplayMovies(movies);
       return;
     }
@@ -70,6 +80,15 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick, di
             />
           </div>
         ))}
+
+        {/* ✨ Add Explore Panel at end of "Recommended for You" row */}
+        {includeExplorePanel && (
+          <div className="content-item explore-panel" onClick={onExploreClick}>
+            <div className="explore-box">
+              <p> {customExploreLabel}</p>
+            </div>
+          </div>
+        )}
 
         {!disableShuffle && visibleCount < displayMovies.length && (
           <div className="see-more-card" onClick={handleSeeMore}>

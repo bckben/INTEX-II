@@ -108,3 +108,30 @@
 .see-more-card:hover {
   background-color: #2a2a2a;
 }
+
+.explore-panel {
+  min-width: 140px;
+  height: 298px;
+  background-color: #1c1c1c;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, background-color 0.3s;
+  cursor: pointer;
+}
+
+.explore-panel:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background-color: #2a2a2a;
+}
+
+.explore-box {
+  text-align: center;
+  line-height: 1.4;
+  padding: 0 10px;
+}

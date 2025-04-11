@@ -26,6 +26,8 @@ const Home: React.FC = () => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showMoreRecs, setShowMoreRecs] = useState(false);
+  const [genreRecs, setGenreRecs] = useState<{ genre: string; recommendations: string[] | string }[]>([]);
 
   useEffect(() => {
     const loadAll = async () => {
@@ -52,16 +54,9 @@ const Home: React.FC = () => {
       const storedUserId = localStorage.getItem('userId');
       const token = localStorage.getItem('authToken');
 
-      console.log('🧠 User ID:', storedUserId);
-      console.log('🔐 Auth Token:', token);
-
-      if (!storedUserId || !token || movies.length === 0) {
-        console.warn('⛔️ Skipping recs fetch (missing user/token/movies)');
-        return;
-      }
+      if (!storedUserId || !token || movies.length === 0) return;
 
       try {
-        console.log(`📡 Fetching recommendations for user ${storedUserId}`);
         const response = await axios.get<string[]>(
           `${API_BASE}/recommendations/user/${storedUserId}`,
           {
@@ -78,7 +73,6 @@ const Home: React.FC = () => {
           .map(id => movies.find(m => m.show_id === id))
           .filter((m): m is Movie => Boolean(m));
         setRecommendedMovies(matched);
-        console.log('✅ Loaded recommended movies:', matched);
       } catch (err) {
         console.error('❌ Failed to fetch user recommendations:', err);
       }
@@ -88,6 +82,28 @@ const Home: React.FC = () => {
 
     if (movies.length > 0) {
       fetchRecs();
+    }
+  }, [movies]);
+
+  useEffect(() => {
+    const fetchGenreRecs = async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+
+      try {
+        const res = await axios.get(`${API_BASE}/Recommendations/Genre/${userId}`);
+        setGenreRecs(res.data);
+        console.log(`🎯 Loaded ${res.data.length} genre rows for user ${userId}`);
+        res.data.forEach((row: any) =>
+          console.log(`→ ${row.genre}: ${Array.isArray(row.recommendations) ? row.recommendations.length : 'n/a'} shows`)
+        );
+      } catch (err) {
+        console.error("❌ Failed to fetch genre recommendations", err);
+      }
+    };
+
+    if (movies.length > 0) {
+      fetchGenreRecs();
     }
   }, [movies]);
 
@@ -184,8 +200,44 @@ const Home: React.FC = () => {
 
       <Container fluid className="full-width-container">
         {recommendedMovies.length > 0 && (
-          <ContentRow title="Recommended for You" movies={recommendedMovies} onMovieClick={handleMovieClick} />
+          <>
+            <ContentRow
+              title="Recommended for You"
+              movies={recommendedMovies}
+              onMovieClick={handleMovieClick}
+              includeExplorePanel
+              onExploreClick={() => setShowMoreRecs(prev => !prev)}
+              customExploreLabel={showMoreRecs ? "Thanks, I'm Good for Now" : "Explore More Curated Picks For You"}
+            />
+
+            {showMoreRecs &&
+              genreRecs.map((rec, index) => {
+                let showIds: string[] = [];
+                try {
+                  showIds = Array.isArray(rec.recommendations)
+                    ? rec.recommendations
+                    : JSON.parse(rec.recommendations);
+                } catch (e) {
+                  console.error(`⚠️ Failed to parse recommendations for genre ${rec.genre}`, e);
+                  return null;
+                }
+
+                const matchedMovies = showIds
+                  .map(id => movies.find(m => m.show_id.trim() === id.trim()))
+                  .filter((m): m is Movie => Boolean(m));
+
+                return (
+                  <ContentRow
+                    key={index}
+                    title={`More ${rec.genre} Picks For You`}
+                    movies={matchedMovies}
+                    onMovieClick={handleMovieClick}
+                  />
+                );
+              })}
+          </>
         )}
+
         {recentlyRated.length > 0 && (
           <ContentRow title="Recently Rated" movies={recentlyRated} onMovieClick={handleMovieClick} disableShuffle />
         )}
