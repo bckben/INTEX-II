@@ -6,8 +6,31 @@ import './CreateAccount.css';
 
 const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
 
+// Email sanitization function
+const sanitizeEmail = (email: string): string => {
+  if (!email) return '';
+  
+  const originalEmail = String(email).trim();
+  
+  // Remove potentially dangerous characters and scripts
+  let sanitized = originalEmail
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/script/gi, '') // Remove script keyword entirely
+    .replace(/alert/gi, '') // Remove alert keyword entirely
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .replace(/:/g, '') // Remove colons
+    .replace(/;/g, '') // Remove semicolons
+    .replace(/--/g, '') // Remove SQL comment markers
+    .replace(/'/g, '') // Remove single quotes
+    .replace(/"/g, ''); // Remove double quotes
+  
+  return sanitized.toLowerCase();
+};
+
 const CreateAccount: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [wasEmailSanitized, setWasEmailSanitized] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -21,9 +44,28 @@ const CreateAccount: React.FC = () => {
     const queryParams = new URLSearchParams(location.search);
     const emailParam = queryParams.get('email');
     if (emailParam) {
-      setEmail(emailParam);
+      const sanitizedEmail = sanitizeEmail(emailParam);
+      setEmail(sanitizedEmail);
+      setWasEmailSanitized(sanitizedEmail !== emailParam);
     }
   }, [location]);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setWasEmailSanitized(false);
+  };
+
+  // Sanitize when focus leaves the input field
+  const handleEmailBlur = () => {
+    const originalEmail = email;
+    const sanitizedEmail = sanitizeEmail(originalEmail);
+    
+    // Only update if something was changed
+    if (originalEmail !== sanitizedEmail) {
+      setEmail(sanitizedEmail);
+      setWasEmailSanitized(true);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,13 +85,16 @@ const CreateAccount: React.FC = () => {
       return;
     }
     
+    // Ensure email is sanitized before submission
+    const finalEmail = sanitizeEmail(email);
+    
     try {
       setLoading(true);
       
-      // Call the registration endpoint
+      // Call the registration endpoint with sanitized email
       const response = await axios.post(
         `${API_BASE}/register`,
-        { email, password },
+        { email: finalEmail, password },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -112,16 +157,22 @@ const CreateAccount: React.FC = () => {
           )}
 
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 email-input-container">
               <Form.Control
-                type="email"
+                type="text"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
                 required
-                className="create-account-input"
+                className={`create-account-input ${wasEmailSanitized ? "sanitized-input" : ""}`}
                 disabled={loading}
               />
+              {wasEmailSanitized && (
+                <div className="validation-message warning">
+                  Your input has been adjusted for security
+                </div>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">

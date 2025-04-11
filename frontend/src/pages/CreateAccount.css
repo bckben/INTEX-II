@@ -219,3 +219,31 @@ input:-webkit-autofill:active {
       background-position: center center;
   }
 }
+
+/* Sanitization styles */
+.email-input-container {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.create-account-input.sanitized-input {
+  border: 2px solid #ffca28 !important;
+  background-color: #fffdf7;
+}
+
+.validation-message {
+  position: absolute;
+  left: 0;
+  bottom: -22px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  width: 100%;
+  text-align: left;
+}
+
+.validation-message.warning {
+  background-color: #fff8e1;
+  color: #ff8f00;
+  border: 1px solid #ffca28;
+}

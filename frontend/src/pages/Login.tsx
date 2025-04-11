@@ -6,28 +6,73 @@ import axios from 'axios';
 
 const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
 
+// Email sanitization function
+const sanitizeEmail = (email: string): string => {
+  if (!email) return '';
+  
+  const originalEmail = String(email).trim();
+  
+  // Remove potentially dangerous characters and scripts
+  let sanitized = originalEmail
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/script/gi, '') // Remove script keyword entirely
+    .replace(/alert/gi, '') // Remove alert keyword entirely
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .replace(/:/g, '') // Remove colons
+    .replace(/;/g, '') // Remove semicolons
+    .replace(/--/g, '') // Remove SQL comment markers
+    .replace(/'/g, '') // Remove single quotes
+    .replace(/"/g, ''); // Remove double quotes
+  
+  return sanitized.toLowerCase();
+};
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [wasEmailSanitized, setWasEmailSanitized] = useState(false);
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setWasEmailSanitized(false);
+  };
+
+  // Sanitize when focus leaves the input field
+  const handleEmailBlur = () => {
+    const originalEmail = email;
+    const sanitizedEmail = sanitizeEmail(originalEmail);
+    
+    // Only update if something was changed
+    if (originalEmail !== sanitizedEmail) {
+      setEmail(sanitizedEmail);
+      setWasEmailSanitized(true);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Ensure the email is sanitized before submitting
+    const finalEmail = sanitizeEmail(email);
+
     try {
+      console.log('Logging in with sanitized email:', finalEmail);
+      
       const response = await axios.post(
         `${API_BASE}/Login?useCookies=true&useSessionCookies=true`,
-        { email, password },
+        { email: finalEmail, password },
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          withCredentials: true, // 👈 Enables cookie-based auth
+          withCredentials: true,
         }
       );
 
@@ -43,10 +88,9 @@ const Login: React.FC = () => {
 
       console.log('🧠 Auth Info:', { userEmail, roles });
 
-      // Store info in localStorage
       localStorage.setItem('authEmail', userEmail);
       localStorage.setItem('authRoles', JSON.stringify(roles));
-      localStorage.setItem('authToken', 'cookie-auth'); // ✅ Fake token so Home.tsx logic works
+      localStorage.setItem('authToken', 'cookie-auth');
 
       // Hardcoded user ID fallback
       if (userEmail === 'aray@galvan.biz') {
@@ -79,16 +123,22 @@ const Login: React.FC = () => {
           <h1 className="login-title">Sign In</h1>
           {error && <div className="alert alert-danger" role="alert">{error}</div>}
           <Form onSubmit={handleLogin}>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 email-input-container">
               <Form.Control
-                type="email"
+                type="text"
                 placeholder="Email or phone number"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
                 required
-                className="login-input"
+                className={`login-input ${wasEmailSanitized ? "sanitized-input" : ""}`}
                 disabled={loading}
               />
+              {wasEmailSanitized && (
+                <div className="validation-message warning">
+                  Your input has been adjusted for security
+                </div>
+              )}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
@@ -101,7 +151,12 @@ const Login: React.FC = () => {
                 disabled={loading}
               />
             </Form.Group>
-            <Button variant="danger" type="submit" className="login-button" disabled={loading}>
+            <Button 
+              variant="danger" 
+              type="submit" 
+              className="login-button" 
+              disabled={loading}
+            >
               {loading ? 'Signing In...' : 'Sign In'}
             </Button>
             <div className="login-options">
