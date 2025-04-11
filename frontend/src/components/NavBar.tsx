@@ -124,7 +124,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
       localStorage.clear();
       setIsLoggedIn(false);
       setIsAdmin(false);
-      navigate('/login');
+      navigate('/');
       window.location.reload(); // ✅ Ensure no cached session
     }
   };
