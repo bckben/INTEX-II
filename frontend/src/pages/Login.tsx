@@ -18,32 +18,40 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      // Temporary: Skip axios call for Vicki and hardcode token/userId
-      if (email.toLowerCase() === 'callahanmichael@gmail.com') {
-        const fakeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VickiHybrid.Login';
-        const userId = 2;
-
-        localStorage.setItem('authToken', fakeToken);
-        localStorage.setItem('userId', String(userId));
-
-        console.log('🧪 Hybrid login as Vicki:', { userId, fakeToken });
-        navigate('/home');
-        return;
-      }
-
-      // Otherwise, call real backend
       const response = await axios.post(
-        'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/Login',
+        'http://localhost:5194/Login?useCookies=true&useSessionCookies=true',
         { email, password },
-        { headers: { 'Content-Type': 'application/json' } }
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true, // required to store auth cookie
+        }
       );
 
-      const { Token, UserId } = response.data;
+      console.log('✅ Logged in successfully (cookie-based):', response);
 
-      localStorage.setItem('authToken', String(Token));
-      localStorage.setItem('userId', String(UserId));
+      // Fetch and store user ID (from /pingauth)
+      const ping = await axios.get('http://localhost:5194/pingauth', {
+        withCredentials: true,
+      });
 
-      console.log('✅ Normal login:', { Token, UserId });
+      const roles = ping.data.roles || [];
+      const userEmail = ping.data.email;
+
+      console.log('🧠 Auth Info:', { userEmail, roles });
+
+      // Store in localStorage
+      localStorage.setItem('authEmail', userEmail);
+      localStorage.setItem('authRoles', JSON.stringify(roles));
+
+      // Optional: Set user ID manually if known (e.g., Matthew = 19)
+      if (userEmail === 'aray@galvan.biz') {
+        localStorage.setItem('userId', '19');
+      } else if (userEmail === 'vicki@cineniche.com') {
+        localStorage.setItem('userId', '2');
+      }
+
       navigate('/home');
     } catch (err: any) {
       setError('Invalid email or password. Please try again.');

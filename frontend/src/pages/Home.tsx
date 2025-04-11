@@ -15,6 +15,8 @@ const FEATURED_IDS = [
   's6201', 's173', 's334', 's443', 's452', 's461'
 ];
 
+const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
+
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [ratings, setRatings] = useState<MovieRating[]>([]);
@@ -30,10 +32,8 @@ const Home: React.FC = () => {
       try {
         setLoading(true);
         const [movieData, ratingData] = await Promise.all([
-          fetchAllMovies(),
-          axios
-            .get<MovieRating[]>('https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/ratings')
-            .then(res => res.data),
+          fetchAllMovies(), // Still uses your local fetch wrapper
+          axios.get<MovieRating[]>(`${API_BASE}/ratings`).then(res => res.data),
         ]);
         setMovies(movieData);
         setRatings(ratingData);
@@ -52,8 +52,8 @@ const Home: React.FC = () => {
       const storedUserId = localStorage.getItem('userId');
       const token = localStorage.getItem('authToken');
 
-      console.log('🧠 storedUserId:', storedUserId);
-      console.log('🔐 authToken:', token);
+      console.log('🧠 Local userId:', storedUserId);
+      console.log('🔐 Local token:', token);
 
       if (!storedUserId || !token || movies.length === 0) {
         console.log('⛔️ Skipping fetchRecs due to missing user/token or no movies');
@@ -61,18 +61,19 @@ const Home: React.FC = () => {
       }
 
       try {
-        console.log('📡 Sending request to recommendations endpoint...');
+        console.log(`📡 Requesting recs for user ID ${storedUserId}`);
         const response = await axios.get<string[]>(
-          `https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net/recommendations/user/${storedUserId}`,
+          `${API_BASE}/recommendations/user/${storedUserId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
+            withCredentials: true,
           }
         );
-        console.log('✅ Got recommendation response:', response);
 
+        console.log('✅ Rec response:', response.data);
         const recIds = response.data;
         const matched = recIds
           .map(id => movies.find(m => m.show_id === id))

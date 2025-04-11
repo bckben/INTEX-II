@@ -35,11 +35,15 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.DependencyInjection.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.DependencyInjection.Abstractions.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.DependencyModel.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Diagnostics.Abstractions.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Hosting.Abstractions.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Identity.Core.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Identity.Stores.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Logging.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.ObjectPool.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.Options.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.Extensions.WebEncoders.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.NET.StringTools.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.OpenApi.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/Microsoft.VisualStudio.Web.CodeGeneration.dll
@@ -76,7 +80,9 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Configuration.ConfigurationManager.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Drawing.Common.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Reflection.MetadataLoadContext.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Security.Cryptography.Pkcs.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Security.Cryptography.ProtectedData.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Security.Cryptography.Xml.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Security.Permissions.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/System.Windows.Extensions.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/af/Humanizer.resources.dll
@@ -240,6 +246,7 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win-x64/native/e_sqlite3.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win-x86/native/e_sqlite3.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win/lib/net7.0/System.Drawing.Common.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win/lib/net7.0/System.Security.Cryptography.ProtectedData.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/runtimes/win/lib/net7.0/System.Windows.Extensions.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/publish/CineNiche.deps.json

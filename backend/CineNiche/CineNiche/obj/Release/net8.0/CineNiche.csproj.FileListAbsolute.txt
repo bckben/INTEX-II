@@ -135,7 +135,6 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/CineNiche.pdb
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/CineNiche.genruntimeconfig.cache
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Release/net8.0/ref/CineNiche.dll
-/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Data/Movies.db
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.AspNetCore.Cryptography.Internal.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
@@ -268,4 +267,12 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/runtimes/win/lib/net7.0/System.Drawing.Common.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/runtimes/win/lib/net7.0/System.Security.Cryptography.ProtectedData.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/runtimes/win/lib/net7.0/System.Windows.Extensions.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.Extensions.Diagnostics.Abstractions.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.Extensions.Hosting.Abstractions.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.Extensions.ObjectPool.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Microsoft.Extensions.WebEncoders.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/System.Security.Cryptography.Pkcs.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/System.Security.Cryptography.Xml.dll
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Data/Identity.db
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Release/net8.0/Data/Movies.db
