@@ -151,3 +151,12 @@ input[type="search"]::-webkit-search-cancel-button {
   appearance: none;
   display: none;
 }
+
+.search-container input::placeholder {
+  color: #b3b3b3;
+  /* subtle off-white like Netflix */
+  opacity: 1;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+

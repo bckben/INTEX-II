@@ -148,7 +148,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
             <Form className="d-flex">
               <FormControl
                 type="search"
-                placeholder="Search"
+                placeholder="Titles, Cast and More..."
                 className="me-2"
                 aria-label="Search"
                 value={searchQuery}

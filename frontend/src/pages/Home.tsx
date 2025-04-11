@@ -242,11 +242,11 @@ const Home: React.FC = () => {
           <ContentRow title="Recently Rated" movies={recentlyRated} onMovieClick={handleMovieClick} disableShuffle />
         )}
         <ContentRow title="Trending Now" movies={trendingMovies()} onMovieClick={handleMovieClick} />
-        <ContentRow title="TV Shows" movies={tvShows} onMovieClick={handleMovieClick} />
-        <ContentRow title="New Releases" movies={newReleases} onMovieClick={handleMovieClick} />
-        <ContentRow title="Classics" movies={classics} onMovieClick={handleMovieClick} />
-        <ContentRow title="Family Movie Night" movies={familyMovies} onMovieClick={handleMovieClick} />
         <ContentRow title="Binge-Worthy Shows" movies={bingeWorthy} onMovieClick={handleMovieClick} />
+        <ContentRow title="New Releases" movies={newReleases} onMovieClick={handleMovieClick} />
+        <ContentRow title="Family Movie Night" movies={familyMovies} onMovieClick={handleMovieClick} />
+        <ContentRow title="TV Shows" movies={tvShows} onMovieClick={handleMovieClick} />
+        <ContentRow title="Classics" movies={classics} onMovieClick={handleMovieClick} />
       </Container>
 
       {selectedMovie && <MovieCard movie={selectedMovie} onClose={handleCloseMovieCard} />}
