@@ -10,7 +10,7 @@ interface MovieCardProps {
 const genreMessages: Record<string, string[]> = {
   Action: [
     "The adrenaline keeps pumping!",
-    "More high-stakes action on deck.",
+    "More high-stakes action on deck...",
     "If that got your blood pumping..."
   ],
   Adventure: [
@@ -21,10 +21,10 @@ const genreMessages: Record<string, string[]> = {
   "Anime Series International TV Shows": [
     "Anime dreams unlocked!",
     "Global hits, anime vibes!",
-    "Next-level stories from around the world."
+    "Next-level stories from around the world:"
   ],
   "British TV Shows Docuseries International TV Shows": [
-    "Class, drama, and tea incoming.",
+    "Class, drama, and tea incoming...",
     "British brilliance continues...",
     "More UK gems just for you."
   ],
@@ -36,7 +36,7 @@ const genreMessages: Record<string, string[]> = {
   Comedies: [
     "Keep the giggles going!",
     "More laughs on the way!",
-    "Comedy gold, part two."
+    "Comedy gold, part two:"
   ],
   "Comedies Dramas International Movies": [
     "Laugh. Cry. Repeat.",
@@ -45,7 +45,7 @@ const genreMessages: Record<string, string[]> = {
   ],
   "Comedies International Movies": [
     "Across the globe, laughs continue!",
-    "Next stop: global giggles.",
+    "Next stop: global giggles...",
     "More international humor ahead!"
   ],
   "Comedies Romantic Movies": [
