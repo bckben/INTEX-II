@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 // DB CONTEXTS
 // ==========================
 builder.Services.AddDbContext<MoviesDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("MovieConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MovieConnection")));
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection")));
