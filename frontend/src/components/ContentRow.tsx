@@ -19,8 +19,11 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, movies, onMovieClick, di
   };
 
   useEffect(() => {
-    if (disableShuffle) {
-      setDisplayMovies(movies); // No shuffle for this row
+    const isUserSpecificRow = title.toLowerCase().includes('recommended') || disableShuffle;
+
+    if (isUserSpecificRow) {
+      // Always show fresh data for personalized or unshuffled rows
+      setDisplayMovies(movies);
       return;
     }
 
