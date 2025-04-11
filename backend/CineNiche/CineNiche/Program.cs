@@ -1,122 +1,176 @@
-using CineNiche.Models;
-using CineNiche.Data;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
+using CineNiche.Data;
+using CineNiche.Models;
+using CineNiche.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// === DATABASE CONFIGURATION ===
-
-// Movie data context
-builder.Services.AddDbContext<MoviesDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Identity data context
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
-
-// === SERVICES ===
-builder.Services.AddSingleton<RecommendationService>();
-
-// Add Identity
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// Authentication must be added before Authorization!
-builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
-builder.Services.AddAuthorization();
-
-// Password policy
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 13;
-});
-
-// Swagger + API
+// ==========================
+// CONTROLLERS & SWAGGER
+// ==========================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS for your frontend
+// ==========================
+// DB CONTEXTS
+// ==========================
+builder.Services.AddDbContext<MoviesDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("MovieConnection")));
+
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection")));
+
+// ==========================
+// IDENTITY SETUP
+// ==========================
+builder.Services.AddIdentity<AppIdentityUser, IdentityRole<int>>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 14;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Tokens.ProviderMap.Clear(); // Disable token generation
+})
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
+    options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
+});
+
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppIdentityUser>, CustomUserClaimsPrincipalFactory>();
+
+// ==========================
+// COOKIE SETTINGS
+// ==========================
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.Name = ".AspNetCore.Identity.Application";
+    options.LoginPath = "/login";
+    options.LogoutPath = "/logout";
+    options.AccessDeniedPath = "/login";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+// ==========================
+// CORS POLICY
+// ==========================
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "https://happy-rock-014679d1e.6.azurestaticapps.net")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Required for cookies!
+        policy.WithOrigins(
+            "http://localhost:5173", 
+            "https://happy-rock-014679d1e.6.azurestaticapps.net"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials(); // 👈 IMPORTANT for Identity/Cookies
     });
+});
+
+// ==========================
+// OTHER SERVICES
+// ==========================
+builder.Services.AddSingleton<RecommendationService>();
+builder.Services.AddSingleton<IEmailSender<AppIdentityUser>, NoOpEmailSender<AppIdentityUser>>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
+    options.AddPolicy("UserOrAdmin", policy => policy.RequireRole("admin", "user"));
 });
 
 var app = builder.Build();
 
-// === SEED ADMIN ROLE + USER ===
+// ==========================
+// SEED ROLES
+// ==========================
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    await SeedRoles(roleManager);
+}
 
-    string adminEmail = "admin@cineniche.com";
-    string adminPassword = "SecureMovie123!";
-
-    // Create Admin role
-    if (!await roleManager.RoleExistsAsync("Admin"))
+static async Task SeedRoles(RoleManager<IdentityRole<int>> roleManager)
+{
+    string[] roleNames = { "Admin", "User" };
+    foreach (var roleName in roleNames)
     {
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
-    }
-
-    // Create Admin user if not found
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new ApplicationUser
+        if (!await roleManager.RoleExistsAsync(roleName))
         {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-        }
-    }
-    else
-    {
-        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
+            await roleManager.CreateAsync(new IdentityRole<int> { Name = roleName });
         }
     }
 }
 
-// === MIDDLEWARE ===
-app.UseHttpsRedirection();
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseCors("AllowFrontend");
-
-// === CSP HEADER ===
-app.Use(async (context, next) =>
+// ==========================
+// MIDDLEWARE
+// ==========================
+if (app.Environment.IsDevelopment())
 {
-    context.Response.Headers.Add("Content-Security-Policy",
-        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
-    await next();
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseAuthentication(); // MUST be before UseAuthorization
+app.UseCors("AllowReactApp"); // ✅ CORRECT POSITION
+app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapIdentityApi<ApplicationUser>();
+app.MapIdentityApi<AppIdentityUser>();
+
+// ==========================
+// LOGOUT ENDPOINT
+// ==========================
+app.MapPost("/logout", async (HttpContext context, SignInManager<AppIdentityUser> signInManager) =>
+{
+    await signInManager.SignOutAsync();
+    context.Response.Cookies.Delete(".AspNetCore.Identity.Application", new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.None
+    });
+    context.Response.Cookies.Delete("cookie_consent_session", new CookieOptions
+    {
+        Path = "/",
+        Secure = true,
+        SameSite = SameSiteMode.None
+    });
+
+    return Results.Ok(new { message = "Logout successful", timestamp = DateTime.UtcNow });
+}).RequireAuthorization();
+
+// ==========================
+// PING ENDPOINT
+// ==========================
+app.MapGet("/pingauth", (ClaimsPrincipal user) =>
+{
+    if (!user.Identity?.IsAuthenticated ?? false)
+        return Results.Unauthorized();
+
+    var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
+    var roles = user.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+    return Results.Json(new { email, roles });
+}).RequireAuthorization();
 
 app.Run();
