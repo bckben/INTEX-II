@@ -77,7 +77,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:5173", 
-            "https://happy-rock-014679d1e.6.azurestaticapps.net"
+            "https://happy-rock-014679d1e.6.azurestaticapps.net",
+            "https://cine-niche.com"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()

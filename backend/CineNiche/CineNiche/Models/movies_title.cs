@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace CineNiche.Models;
 
 public partial class movies_title
 {
+    [Key]
     public string? show_id { get; set; }
 
     public string? type { get; set; }

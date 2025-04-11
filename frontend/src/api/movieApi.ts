@@ -103,7 +103,9 @@ export const fetchMovieById = async (showId: string): Promise<Movie | null> => {
 // Delete a movie by ID
 export const deleteMovie = async (showId: string): Promise<boolean> => {
   try {
-    await axios.delete(`${BASE_URL}/movies/${showId}`);
+    await axios.delete(`${BASE_URL}/movies/${showId}`, {
+      withCredentials: true // ✅ REQUIRED FOR AUTH TO WORK IN AZURE
+    });
     return true;
   } catch (error) {
     console.error(`Error deleting movie with ID ${showId}:`, error);
