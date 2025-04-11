@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { fetchAllMovies, deleteMovie, Movie } from '../api/movieApi';
-import MovieForm from '../components/MovieForm';
-import Dashboard from '../components/Dashboard';
-import './Admin.css';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { fetchAllMovies, deleteMovie, Movie } from "../api/movieApi";
+import MovieForm from "../components/MovieForm";
+import Dashboard from "../components/Dashboard";
+import "./Admin.css";
 
 const Admin: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -14,7 +14,7 @@ const Admin: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
   const [, setTotalMovies] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'movies' | 'dashboard'>('movies');
+  const [activeTab, setActiveTab] = useState<"movies" | "dashboard">("movies");
 
   const navigate = useNavigate();
 
@@ -30,21 +30,26 @@ const Admin: React.FC = () => {
       setTotalMovies(data.length);
       setLoading(false);
     } catch (err) {
-      setError('Failed to load movies');
+      setError("Failed to load movies");
       setLoading(false);
     }
   };
 
   const handleDelete = async (movieId: string) => {
-    if (window.confirm('Are you sure you want to delete this movie?')) {
+    if (window.confirm("Are you sure you want to delete this movie?")) {
       const success = await deleteMovie(movieId);
       if (success) {
-        setMovies(prev => prev.filter(movie => movie.show_id !== movieId));
-        setTotalMovies(prev => prev - 1);
+        setMovies((prev) => prev.filter((movie) => movie.show_id !== movieId));
+        setTotalMovies((prev) => prev - 1);
       } else {
-        setError('Failed to delete movie');
+        setError("Failed to delete movie");
       }
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const indexOfLastMovie = currentPage * moviesPerPage;
@@ -55,50 +60,55 @@ const Admin: React.FC = () => {
   return (
     <div className="admin-page">
       <div className="admin-container">
-        <h1>Admin Panel</h1>
+        {/* Logo and Logout */}
+        <div className="admin-header">
+          <Link to="/home" className="admin-logo">
+            <img
+              src="/assets/logo.png"
+              alt="CineNiche Logo"
+              className="navbar-logo"
+            />
+          </Link>
+          <button className="btn-logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
 
+        {/* Title */}
+        <h1 className="admin-title">Admin Dashboard</h1>
+
+        {/* Navigation */}
         <div className="admin-controls-top">
-          <button className="btn-back" onClick={() => navigate('/movies')}>
+          <button className="btn-back" onClick={() => navigate("/movies")}>
             ← Back to All Movies
           </button>
         </div>
 
-        <div className="admin-tabs">
-          <button
-            className={`tab-button ${activeTab === 'movies' ? 'active' : ''}`}
-            onClick={() => setActiveTab('movies')}
-          >
-            Movie Database
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
-          >
-            Dashboard Reports
-          </button>
+        <div className="admin-tabs-wrapper">
+          <div className="admin-tabs">
+            <button
+              className={`tab-button ${activeTab === "movies" ? "active" : ""}`}
+              onClick={() => setActiveTab("movies")}
+            >
+              Movie Database
+            </button>
+            <button
+              className={`tab-button ${activeTab === "dashboard" ? "active" : ""}`}
+              onClick={() => setActiveTab("dashboard")}
+            >
+              Dashboard Reports
+            </button>
+          </div>
+
+          {activeTab === "movies" && (
+            <button className="btn-add" onClick={() => setShowAddForm(true)}>
+              Add New Movie
+            </button>
+          )}
         </div>
 
-        {activeTab === 'movies' && (
+        {activeTab === "movies" && (
           <>
-            <div className="admin-controls">
-              <button className="btn-add" onClick={() => setShowAddForm(true)}>Add New Movie</button>
-              <div className="pagination-controls">
-                <span>Movies per page: </span>
-                <select
-                  value={moviesPerPage}
-                  onChange={(e) => {
-                    setMoviesPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                  className="select-movies-per-page"
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                </select>
-              </div>
-            </div>
-
             {error && <div className="error-message">{error}</div>}
 
             {loading ? (
@@ -118,7 +128,7 @@ const Admin: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentMovies.map(movie => (
+                    {currentMovies.map((movie) => (
                       <tr key={movie.show_id}>
                         <td>{movie.show_id}</td>
                         <td>{movie.title}</td>
@@ -127,8 +137,18 @@ const Admin: React.FC = () => {
                         <td>{movie.director}</td>
                         <td>{movie.rating}</td>
                         <td className="action-buttons">
-                          <button className="btn-edit" onClick={() => setEditingMovie(movie)}>Edit</button>
-                          <button className="btn-delete" onClick={() => handleDelete(movie.show_id)}>Delete</button>
+                          <button
+                            className="btn-edit"
+                            onClick={() => setEditingMovie(movie)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn-delete"
+                            onClick={() => handleDelete(movie.show_id)}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -138,7 +158,7 @@ const Admin: React.FC = () => {
                 <div className="pagination">
                   <button
                     className="page-button"
-                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
                     disabled={currentPage === 1}
                   >
                     &laquo; Prev
@@ -148,11 +168,27 @@ const Admin: React.FC = () => {
                   </span>
                   <button
                     className="page-button"
-                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
                     disabled={currentPage === totalPages}
                   >
                     Next &raquo;
                   </button>
+                </div>
+
+                <div className="pagination-controls pagination-bottom">
+                  <span>Movies per page: </span>
+                  <select
+                    value={moviesPerPage}
+                    onChange={(e) => {
+                      setMoviesPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="select-movies-per-page"
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
                 </div>
               </>
             )}
@@ -161,8 +197,16 @@ const Admin: React.FC = () => {
               <div className="modal-overlay">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h2>{editingMovie ? 'Edit Movie' : 'Add New Movie'}</h2>
-                    <button className="close-button" onClick={() => setShowAddForm(false)}>&times;</button>
+                    <h2>{editingMovie ? "Edit Movie" : "Add New Movie"}</h2>
+                    <button
+                      className="close-button"
+                      onClick={() => {
+                        setShowAddForm(false);
+                        setEditingMovie(null); // ✅ this closes the modal if you're editing
+                      }}
+                    >
+                      &times;
+                    </button>
                   </div>
                   <MovieForm
                     movie={editingMovie}
@@ -182,7 +226,7 @@ const Admin: React.FC = () => {
           </>
         )}
 
-        {activeTab === 'dashboard' && <Dashboard />}
+        {activeTab === "dashboard" && <Dashboard />}
       </div>
     </div>
   );

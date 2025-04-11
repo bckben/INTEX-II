@@ -10,7 +10,7 @@ import { fetchAllMovies, Movie, MovieRating } from '../api/movieApi';
 import axios from 'axios';
 
 const FEATURED_IDS = [
-  's341', 's356', 's1334', 's2520', 's2583',
+  's341', 's681', 's1334', 's2520', 's2583',
   's8069', 's8581', 's330', 's574', 's7073', 's1359', 's779',
   's6201', 's173', 's334', 's443', 's452', 's461'
 ];
