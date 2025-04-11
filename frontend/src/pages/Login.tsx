@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import axios from 'axios';
 
+const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,20 +21,20 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5194/Login?useCookies=true&useSessionCookies=true',
+        `${API_BASE}/Login?useCookies=true&useSessionCookies=true`,
         { email, password },
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          withCredentials: true, // required to store auth cookie
+          withCredentials: true, // 👈 Enables cookie-based auth
         }
       );
 
       console.log('✅ Logged in successfully (cookie-based):', response);
 
-      // Fetch and store user ID (from /pingauth)
-      const ping = await axios.get('http://localhost:5194/pingauth', {
+      // Fetch user info from /pingauth
+      const ping = await axios.get(`${API_BASE}/pingauth`, {
         withCredentials: true,
       });
 
@@ -41,11 +43,11 @@ const Login: React.FC = () => {
 
       console.log('🧠 Auth Info:', { userEmail, roles });
 
-      // Store in localStorage
+      // Store email & roles in localStorage
       localStorage.setItem('authEmail', userEmail);
       localStorage.setItem('authRoles', JSON.stringify(roles));
 
-      // Optional: Set user ID manually if known (e.g., Matthew = 19)
+      // 🔒 Hardcoded fallback for now
       if (userEmail === 'aray@galvan.biz') {
         localStorage.setItem('userId', '19');
       } else if (userEmail === 'vicki@cineniche.com') {
