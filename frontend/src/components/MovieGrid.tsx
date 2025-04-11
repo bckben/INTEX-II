@@ -1,5 +1,4 @@
-// add useEffect later if needed
-import React, {useRef, useState, useCallback } from 'react'; 
+import React, { useRef, useState, useCallback } from 'react';
 import './MovieGrid.css';
 import { Movie } from '../api/movieApi';
 
@@ -14,17 +13,20 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, onMovieClick }) => {
   const [visibleCount, setVisibleCount] = useState(CHUNK_SIZE);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // ❌ Filter out movies with *any* "?" in the title
+  const filteredMovies = movies.filter(m => !m.title.includes('?'));
+
   const lastMovieRef = useCallback((node: HTMLDivElement | null) => {
     if (observerRef.current) observerRef.current.disconnect();
 
     observerRef.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        setVisibleCount((prev) => Math.min(prev + CHUNK_SIZE, movies.length));
+        setVisibleCount((prev) => Math.min(prev + CHUNK_SIZE, filteredMovies.length));
       }
     });
 
     if (node) observerRef.current.observe(node);
-  }, [movies.length]);
+  }, [filteredMovies.length]);
 
   const fallbackPoster = '/assets/movie_tape.jpg';
 
@@ -35,7 +37,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, onMovieClick }) => {
 
   return (
     <div className="movie-grid">
-      {movies.slice(0, visibleCount).map((movie, idx) => {
+      {filteredMovies.slice(0, visibleCount).map((movie, idx) => {
         const isLast = idx === visibleCount - 1;
 
         return (
