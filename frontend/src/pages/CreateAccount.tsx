@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { registerUser } from '../api/registrationApi';
+import axios from 'axios';
 import './CreateAccount.css';
 
+const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
+
 const CreateAccount: React.FC = () => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -47,28 +47,40 @@ const CreateAccount: React.FC = () => {
       setLoading(true);
       
       // Call the registration endpoint
-      const response = await registerUser({
-        name,
-        phone,
-        email,
-        password
-      });
+      const response = await axios.post(
+        `${API_BASE}/register`,
+        { email, password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true, // Enable cookie-based auth (same as login)
+        }
+      );
       
-      if (response.success) {
-        console.log('Account creation successful:', response);
-        
-        // Store user ID from response
-        localStorage.setItem('userId', response.user_id.toString());
-        
-        // Redirect to home page
-        navigate('/home');
-      } else {
-        // Handle unsuccessful registration
-        setError(response.message || 'Registration failed. Please try again.');
-      }
-    } catch (error) {
-      console.error('Registration failed:', error);
-      setError('An unexpected error occurred. Please try again.');
+      console.log('✅ Registration successful:', response);
+      
+      // Fetch user info from /pingauth (same as login page)
+      const ping = await axios.get(`${API_BASE}/pingauth`, {
+        withCredentials: true,
+      });
+
+      const roles = ping.data.roles || [];
+      const userEmail = ping.data.email;
+
+      console.log('🧠 Auth Info:', { userEmail, roles });
+
+      // Store info in localStorage (same as login page)
+      localStorage.setItem('authEmail', userEmail);
+      localStorage.setItem('authRoles', JSON.stringify(roles));
+      localStorage.setItem('authToken', 'cookie-auth');
+
+      // Redirect to home page
+      navigate('/login');
+      
+    } catch (error: any) {
+      console.error('❌ Registration failed:', error.response?.data || error.message);
+      setError(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -100,30 +112,6 @@ const CreateAccount: React.FC = () => {
           )}
 
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="create-account-input"
-                disabled={loading}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="tel"
-                placeholder="Phone Number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                className="create-account-input"
-                disabled={loading}
-              />
-            </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Control
                 type="email"
