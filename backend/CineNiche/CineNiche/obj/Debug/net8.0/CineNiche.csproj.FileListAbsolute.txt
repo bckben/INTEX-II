@@ -281,3 +281,4 @@
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Debug/net8.0/CineNiche.genruntimeconfig.cache
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/obj/Debug/net8.0/ref/CineNiche.dll
 /Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/Data/Identity.db
+/Users/bckben/RiderProjects/CineNiche-INTEX/backend/CineNiche/CineNiche/bin/Debug/net8.0/Data/Movies.db
