@@ -1,7 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 // API base URL from your backend
-const BASE_URL = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
+const BASE_URL =
+  "https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net";
 
 // Types from your C# models
 export interface Movie {
@@ -81,7 +84,7 @@ export const fetchAllMovies = async (): Promise<Movie[]> => {
     const response = await axios.get(`${BASE_URL}/movies`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching movies:', error);
+    console.error("Error fetching movies:", error);
     return [];
   }
 };
@@ -111,7 +114,9 @@ export const deleteMovie = async (showId: string): Promise<boolean> => {
 // Update a movie
 export const updateMovie = async (movie: Movie): Promise<boolean> => {
   try {
-    await axios.put(`${BASE_URL}/movies/${movie.show_id}`, movie);
+    await axios.put(`${BASE_URL}/movies/${movie.show_id}`, movie, {
+      withCredentials: true, // ✅ this sends the auth cookie
+    });
     return true;
   } catch (error) {
     console.error(`Error updating movie with ID ${movie.show_id}:`, error);
@@ -125,18 +130,22 @@ export const addMovie = async (movie: Movie): Promise<Movie | null> => {
     const response = await axios.post(`${BASE_URL}/movies`, movie);
     return response.data;
   } catch (error) {
-    console.error('Error adding new movie:', error);
+    console.error("Error adding new movie:", error);
     return null;
   }
 };
 
 // Fetch recommendations for a movie by title
-export const fetchRecommendations = async (title: string): Promise<string[]> => {
+export const fetchRecommendations = async (
+  title: string
+): Promise<string[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/Recommendations/Show?title=${encodeURIComponent(title)}`);
+    const response = await axios.get(
+      `${BASE_URL}/Recommendations/Show?title=${encodeURIComponent(title)}`
+    );
     return response.data;
   } catch (error) {
-    console.error('Error fetching recommendations:', error);
+    console.error("Error fetching recommendations:", error);
     return [];
   }
 };
