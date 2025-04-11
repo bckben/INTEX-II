@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Landing.css';
-import CookieBanner from '../components/CookieBanner';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Landing.css";
+import CookieBanner from "../components/CookieBanner";
+import Footer from "../components/Footer";
 
 const Landing: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -39,20 +40,29 @@ const Landing: React.FC = () => {
                 <option value="fr">Français</option>
               </select>
             </div>
-            <Link to="/login" className="sign-in-button">Sign In</Link>
+            <Link to="/login" className="sign-in-button">
+              Sign In
+            </Link>
           </div>
         </header>
 
         <div className="landing-content">
           <div className="content-container">
-            <h1>Unlimited movies,<br />TV shows, and more</h1>
+            <h1>
+              Unlimited movies,
+              <br />
+              TV shows, and more
+            </h1>
             <h2>Watch anytime, anywhere.</h2>
-            <p className="ready-text">Ready to watch? Enter your email to create or restart your membership.</p>
-            
+            <p className="ready-text">
+              Ready to watch? Enter your email to create or restart your
+              membership.
+            </p>
+
             <form onSubmit={handleSubmit} className="email-form">
-              <input 
-                type="email" 
-                placeholder="Email address" 
+              <input
+                type="email"
+                placeholder="Email address"
                 value={email}
                 onChange={handleEmailChange}
                 required
@@ -64,9 +74,12 @@ const Landing: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Cookie Consent Banner */}
       <CookieBanner />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
