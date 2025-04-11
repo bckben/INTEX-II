@@ -43,11 +43,12 @@ const Login: React.FC = () => {
 
       console.log('🧠 Auth Info:', { userEmail, roles });
 
-      // Store email & roles in localStorage
+      // Store info in localStorage
       localStorage.setItem('authEmail', userEmail);
       localStorage.setItem('authRoles', JSON.stringify(roles));
+      localStorage.setItem('authToken', 'cookie-auth'); // ✅ Fake token so Home.tsx logic works
 
-      // 🔒 Hardcoded fallback for now
+      // Hardcoded user ID fallback
       if (userEmail === 'aray@galvan.biz') {
         localStorage.setItem('userId', '19');
       } else if (userEmail === 'vicki@cineniche.com') {
