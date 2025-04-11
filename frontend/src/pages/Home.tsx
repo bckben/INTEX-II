@@ -182,7 +182,7 @@ const Home: React.FC = () => {
         />
       )}
 
-      <Container fluid className="content-container">
+      <Container fluid className="full-width-container">
         {recommendedMovies.length > 0 && (
           <ContentRow title="Recommended for You" movies={recommendedMovies} onMovieClick={handleMovieClick} />
         )}
