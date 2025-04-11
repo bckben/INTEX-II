@@ -3,6 +3,9 @@ import { Navbar, Nav, Container, Form, FormControl, Button } from 'react-bootstr
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './NavBar.css';
 import { Movie, fetchAllMovies } from '../api/movieApi';
+import axios from 'axios';
+
+const API_BASE = 'https://cineniche-backend-v2-haa5huekb0ejavgw.eastus-01.azurewebsites.net';
 
 interface NavBarProps {
   onMovieClick?: (showId: string) => void;
@@ -10,7 +13,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('authEmail'));
   const [searchQuery, setSearchQuery] = useState('');
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
@@ -24,7 +27,6 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -88,22 +90,25 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${API_BASE}/Logout`, {}, { withCredentials: true });
+    } catch (err) {
+      console.error('❌ Logout failed:', err);
+    } finally {
+      localStorage.clear();
+      setIsLoggedIn(false);
+      navigate('/login');
+      window.location.reload(); // ✅ Ensure no cached session
+    }
+  };
+
   return (
-    <Navbar
-      variant="dark"
-      expand="lg"
-      fixed="top"
-      className={`navbar-custom ${isScrolled ? 'navbar-scrolled' : ''}`}
-    >
+    <Navbar variant="dark" expand="lg" fixed="top" className={`navbar-custom ${isScrolled ? 'navbar-scrolled' : ''}`}>
       <Container fluid>
         <Navbar.Brand as={Link} to="/home" className="d-flex align-items-center">
-          <img
-            src="/assets/logo.png"
-            alt="CineNiche Logo"
-            className="navbar-logo me-2"
-          />
+          <img src="/assets/logo.png" alt="CineNiche Logo" className="navbar-logo me-2" />
         </Navbar.Brand>
-
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -111,7 +116,6 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
             <Nav.Link as={Link} to="/movies">All Movies</Nav.Link>
             <Nav.Link as={Link} to="/admin">Admin Portal</Nav.Link>
           </Nav>
-
           <div className="search-container position-relative me-3">
             <Form className="d-flex">
               <FormControl
@@ -124,12 +128,9 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
                 onKeyDown={handleEnter}
               />
               {searchQuery && (
-                <Button variant="outline-light" onClick={handleClear}>
-                  ✕
-                </Button>
+                <Button variant="outline-light" onClick={handleClear}>✕</Button>
               )}
             </Form>
-
             {showDropdown && searchResults.length > 0 && (
               <ul className="search-dropdown" ref={dropdownRef}>
                 {searchResults.map((movie) => (
@@ -150,30 +151,13 @@ const NavBar: React.FC<NavBarProps> = ({ onMovieClick }) => {
               </ul>
             )}
           </div>
-
           {isLoggedIn ? (
-            <div className="user-profile">
-              <img
-                src="/images/profile-placeholder.jpg"
-                alt="User Profile"
-                className="profile-image"
-              />
-              <div className="dropdown-menu">
-                <Link to="/profile" className="dropdown-item">Profile</Link>
-                <Link to="/settings" className="dropdown-item">Settings</Link>
-                <button className="dropdown-item" onClick={() => setIsLoggedIn(false)}>
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Button
-              as={Link as any}
-              to="/login"
-              variant="danger"
-              className="logout-button"
-            >
+            <Button variant="danger" onClick={handleLogout} className="logout-button">
               Log Out
+            </Button>
+          ) : (
+            <Button as={Link as any} to="/login" variant="danger" className="logout-button">
+              Log In
             </Button>
           )}
         </Navbar.Collapse>

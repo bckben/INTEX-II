@@ -32,14 +32,14 @@ const Home: React.FC = () => {
       try {
         setLoading(true);
         const [movieData, ratingData] = await Promise.all([
-          fetchAllMovies(), // Still uses your local fetch wrapper
+          fetchAllMovies(),
           axios.get<MovieRating[]>(`${API_BASE}/ratings`).then(res => res.data),
         ]);
         setMovies(movieData);
         setRatings(ratingData);
       } catch (err) {
         console.error('❌ Error loading movies or ratings:', err);
-        setError('Something went wrong loading movies.');
+        setError('Something went wrong while loading content.');
       } finally {
         setLoading(false);
       }
@@ -52,16 +52,16 @@ const Home: React.FC = () => {
       const storedUserId = localStorage.getItem('userId');
       const token = localStorage.getItem('authToken');
 
-      console.log('🧠 Local userId:', storedUserId);
-      console.log('🔐 Local token:', token);
+      console.log('🧠 User ID:', storedUserId);
+      console.log('🔐 Auth Token:', token);
 
       if (!storedUserId || !token || movies.length === 0) {
-        console.log('⛔️ Skipping fetchRecs due to missing user/token or no movies');
+        console.warn('⛔️ Skipping recs fetch (missing user/token/movies)');
         return;
       }
 
       try {
-        console.log(`📡 Requesting recs for user ID ${storedUserId}`);
+        console.log(`📡 Fetching recommendations for user ${storedUserId}`);
         const response = await axios.get<string[]>(
           `${API_BASE}/recommendations/user/${storedUserId}`,
           {
@@ -73,14 +73,14 @@ const Home: React.FC = () => {
           }
         );
 
-        console.log('✅ Rec response:', response.data);
         const recIds = response.data;
         const matched = recIds
           .map(id => movies.find(m => m.show_id === id))
           .filter((m): m is Movie => Boolean(m));
         setRecommendedMovies(matched);
+        console.log('✅ Loaded recommended movies:', matched);
       } catch (err) {
-        console.error('❌ Error fetching user recommendations:', err);
+        console.error('❌ Failed to fetch user recommendations:', err);
       }
 
       updateRecentlyRated();
