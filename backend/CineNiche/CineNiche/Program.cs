@@ -127,7 +127,38 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Add("Content-Security-Policy",
+            "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "img-src 'self' data:;");
+        await next();
+    });
 }
+else
+{
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Add("Content-Security-Policy",
+            "default-src 'self'; " +
+            "script-src 'self'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "img-src 'self' data:;");
+        await next();
+    });
+}
+
+app.UseCors("AllowReactApp");
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapIdentityApi<AppIdentityUser>();
+
 
 app.UseCors("AllowReactApp"); // ✅ CORRECT POSITION
 app.UseHttpsRedirection();
